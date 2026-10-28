@@ -1,0 +1,71 @@
+"""Seed projects and quiz questions (original educational content)."""
+
+CHECKLIST = ("Create a public GitHub repository with a clear name\nWrite a README: what it does, how to run it, screenshots\n"
+             "Commit regularly with meaningful messages\nAdd a short 'What I learned / what I'd improve' section\n"
+             "Add a LICENSE and a .gitignore\nPin it to your GitHub profile")
+
+# (slug, title, difficulty, hours, skills, description, outcomes, technologies, portfolio blurb)
+PROJECTS = [
+    ("calculator-cli", "Command-line calculator", 1, 3, "python", "Build a calculator that parses expressions, handles errors and keeps a history.", "Functions, input validation, error handling.", "Python", "A tested command-line calculator with clear error handling."),
+    ("expense-tracker", "Expense tracker", 1, 6, "python", "Track income and expenses in a file, with monthly summaries.", "File I/O, dictionaries, basic reporting.", "Python, CSV/JSON", "A personal finance tracker that stores data locally and reports monthly totals."),
+    ("quiz-app", "Quiz application", 1, 6, "python", "A quiz that loads questions from a file, scores answers and stores high scores.", "Data modelling, loops, persistence.", "Python", "A configurable quiz engine with score history."),
+    ("flask-notes-app", "Flask notes app with login", 2, 15, "python,backend-development,sql", "A multi-user notes web app with registration, login and CRUD.", "Routing, templates, sessions, password hashing, SQL.", "Python, Flask, SQLite, HTML/CSS", "A secure multi-user web app with authentication and a relational database."),
+    ("api-data-project", "Public-data API explorer", 2, 12, "python,data-analysis", "Fetch data from a public API, clean it with pandas and present insights.", "HTTP APIs, JSON, pandas, summarising data.", "Python, requests, pandas", "A data pipeline from an open API to a short insight report."),
+    ("library-database", "Library database design", 1, 6, "sql", "Design a normalised schema for a library and write queries for common questions.", "ER modelling, normalisation, JOINs.", "SQL, SQLite or MySQL", "An ER diagram, schema script and a set of documented queries."),
+    ("sales-sql-analysis", "Sales analysis with SQL", 2, 10, "sql,data-analysis", "Analyse a sample sales dataset with JOINs, aggregation and window functions.", "Business questions to SQL, aggregation, window functions.", "SQL, spreadsheets", "A case study answering business questions from a relational dataset."),
+    ("portfolio-site", "Personal portfolio website", 1, 8, "web-fundamentals", "A responsive, accessible portfolio page with projects and contact details.", "Semantic HTML, CSS layout, accessibility.", "HTML, CSS", "A live portfolio page that is the front door to your other work."),
+    ("js-task-board", "Interactive task board", 2, 8, "javascript,web-fundamentals", "A drag-and-drop style task board that saves to local storage.", "DOM manipulation, events, state, persistence.", "HTML, CSS, JavaScript", "An interactive front-end app with persistent state."),
+    ("dsa-visualizer", "Sorting algorithm visualiser", 3, 20, "dsa,javascript", "Visualise sorting and searching algorithms step by step.", "Algorithm implementation, complexity, animation.", "JavaScript, HTML canvas", "A visual explainer that demonstrates algorithm behaviour and complexity."),
+    ("open-source-contribution", "First open-source contribution", 2, 6, "git", "Find a beginner-friendly issue and submit a pull request.", "Forking, branching, pull requests, code review.", "Git, GitHub", "A merged (or reviewed) pull request on a public project."),
+    ("home-network-lab", "Home network lab and diagram", 1, 6, "networking", "Design and document a small network: addressing, subnets, DNS and DHCP.", "IP addressing, subnetting, network documentation.", "Packet Tracer or similar, diagrams", "A documented network design with addressing plan."),
+    ("packet-analysis", "Packet capture analysis", 2, 8, "networking,security-fundamentals", "Capture traffic on a lab network and explain what each protocol is doing.", "Protocol analysis, spotting insecure traffic.", "Wireshark", "A write-up explaining captured traffic and security observations."),
+    ("password-checker", "Password strength checker", 1, 5, "python,security-fundamentals", "A tool that scores passwords and explains weaknesses, with hashing demonstrated safely.", "Hashing vs encryption, entropy, secure coding basics.", "Python", "A small security utility with a clear explanation of its limits."),
+    ("bash-automation", "Shell automation toolkit", 1, 5, "linux", "A set of scripts for backups, log summaries and file organisation.", "Shell scripting, permissions, cron concepts.", "Bash, Linux", "A documented script collection that solves real problems."),
+    ("vuln-lab-writeup", "Web vulnerability lab write-up", 2, 12, "web-security,security-fundamentals", "Complete lab exercises for injection and XSS, then write up exploit and fix.", "Understanding vulnerabilities, remediation, reporting.", "PortSwigger labs, Burp Community", "A professional vulnerability report for each issue exploited and fixed."),
+    ("ctf-portfolio", "CTF write-up portfolio", 3, 20, "security-fundamentals,linux,web-security", "Solve beginner CTF challenges and publish structured write-ups.", "Methodical problem solving, tooling, communication.", "picoCTF, OverTheWire, Linux", "A public collection of CTF write-ups showing your reasoning."),
+    ("excel-dashboard", "Excel KPI dashboard", 1, 8, "excel,data-visualization", "Build an interactive dashboard from a sample dataset using pivots and charts.", "Pivot tables, charts, dashboard design.", "Excel", "A dashboard with a short note explaining each KPI."),
+    ("eda-project", "Exploratory data analysis case study", 2, 12, "data-analysis,statistics,python", "Pick an open dataset, clean it, explore it and present findings.", "Cleaning, summary statistics, visual storytelling.", "Python, pandas, Matplotlib", "A reproducible notebook with a written conclusion."),
+    ("ml-classifier", "Classifier with honest evaluation", 2, 12, "machine-learning,python", "Train a classification model and evaluate it with proper train/test splits and metrics.", "Train/test split, metrics, overfitting.", "Python, scikit-learn", "An ML project that reports limitations as well as results."),
+    ("ratio-analysis", "Company ratio analysis report", 2, 10, "financial-accounting,financial-management,excel", "Analyse a listed company's published financial statements using standard ratios.", "Ratio analysis, interpretation, report writing.", "Excel, public annual reports", "A written report with ratio tables and interpretation."),
+    ("tax-computation", "Income tax computation sheet", 1, 6, "taxation,excel", "Build a spreadsheet that computes tax from salary and deduction inputs using current published slabs.", "Tax computation, spreadsheet logic, checking against official rules.", "Excel", "A tax calculator whose rules cite the official source and date."),
+    ("marketing-plan", "Marketing plan for a small brand", 1, 10, "marketing-fundamentals,digital-marketing", "Create a segmentation, positioning and channel plan for a real or imagined small brand.", "STP, channel selection, KPIs.", "Slides or documents", "A concise marketing plan with metrics."),
+    ("hr-onboarding-plan", "Employee onboarding plan", 1, 8, "hr-management,communication", "Design a 30-60-90-day onboarding plan and the supporting documents.", "Process design, communication, HR basics.", "Documents", "A practical onboarding package."),
+]
+
+# (skill slug, question, a, b, c, d, answer, explanation)
+QUIZ = [
+    ("python", "Which of these creates a list in Python?", "(1, 2, 3)", "[1, 2, 3]", "{1, 2, 3}", "<1, 2, 3>", "b", "Square brackets create a list; parentheses make a tuple and braces a set."),
+    ("python", "What does len('navora') return?", "5", "6", "7", "An error", "b", "The string has 6 characters."),
+    ("python", "Which keyword defines a function?", "func", "function", "def", "lambda only", "c", "Functions are defined with def."),
+    ("python", "What is the result of 7 // 2 in Python 3?", "3.5", "3", "4", "1", "b", "// is floor division."),
+    ("sql", "Which clause filters rows BEFORE grouping?", "HAVING", "WHERE", "ORDER BY", "LIMIT", "b", "WHERE filters rows; HAVING filters groups after GROUP BY."),
+    ("sql", "Which JOIN keeps all rows from the left table even without a match?", "INNER JOIN", "LEFT JOIN", "CROSS JOIN", "SELF JOIN only", "b", "LEFT JOIN keeps every left row and fills NULLs for non-matches."),
+    ("sql", "What does PRIMARY KEY guarantee?", "Unique, non-null identifier for each row", "Faster inserts", "Sorted output", "Text only", "a", "A primary key uniquely identifies each row and cannot be NULL."),
+    ("sql", "Which function counts rows?", "SUM()", "COUNT()", "TOTAL()", "ROWS()", "b", "COUNT() returns the number of rows."),
+    ("git", "Which command saves staged changes as a snapshot?", "git push", "git commit", "git clone", "git status", "b", "git commit records the staged snapshot."),
+    ("git", "What does git clone do?", "Deletes a repo", "Copies a remote repository locally", "Merges branches", "Creates a tag", "b", "Clone downloads a full copy of a repository."),
+    ("git", "Which command creates and switches to a new branch?", "git branch -d x", "git checkout -b x", "git merge x", "git init x", "b", "git checkout -b (or git switch -c) creates and switches."),
+    ("networking", "Which protocol translates domain names to IP addresses?", "DHCP", "DNS", "ARP", "SMTP", "b", "DNS maps names such as example.com to IP addresses."),
+    ("networking", "Which layer of the OSI model does IP operate at?", "Layer 2", "Layer 3", "Layer 4", "Layer 7", "b", "IP is a Layer 3 (network) protocol."),
+    ("networking", "TCP differs from UDP because TCP is...", "Connectionless", "Reliable and connection-oriented", "Only used for DNS", "Unordered", "b", "TCP provides reliable, ordered delivery using connections."),
+    ("networking", "What is the default port for HTTPS?", "21", "80", "443", "25", "c", "HTTPS uses port 443 by default."),
+    ("security-fundamentals", "What does the 'I' in the CIA triad stand for?", "Identity", "Integrity", "Internet", "Isolation", "b", "Confidentiality, Integrity, Availability."),
+    ("security-fundamentals", "Which is the best way to store passwords?", "Plain text", "Reversible encryption", "Salted, slow hashing", "Base64", "c", "Use a salted, slow password-hashing function."),
+    ("security-fundamentals", "Phishing is mainly an attack on...", "Hardware", "People, via deception", "Routers only", "Compilers", "b", "Phishing tricks people into revealing information or running malware."),
+    ("web-security", "Which technique best prevents SQL injection?", "Hiding the database", "Parameterised queries", "Longer passwords", "Using HTTPS only", "b", "Parameterised queries separate code from data."),
+    ("web-security", "XSS allows an attacker to...", "Run script in another user's browser", "Crash the server CPU", "Read the OS kernel", "Change DNS records", "a", "Cross-site scripting injects script that runs in victims' browsers."),
+    ("web-security", "A CSRF token is used to...", "Compress pages", "Confirm a state-changing request came from your site", "Encrypt the database", "Cache images", "b", "It proves the request was intentionally made from your own form."),
+    ("dsa", "What is the time complexity of binary search on a sorted array?", "O(n)", "O(log n)", "O(n log n)", "O(1)", "b", "Each step halves the search space."),
+    ("dsa", "Which data structure follows FIFO?", "Stack", "Queue", "Tree", "Heap", "b", "A queue returns the oldest item first."),
+    ("dsa", "Worst-case time of bubble sort?", "O(n)", "O(n log n)", "O(n^2)", "O(log n)", "c", "Nested passes give quadratic time."),
+    ("web-fundamentals", "Which HTML element is most appropriate for the main navigation links?", "<div>", "<nav>", "<span>", "<section>", "b", "<nav> is the semantic element for navigation."),
+    ("web-fundamentals", "In CSS, which property controls space INSIDE an element's border?", "margin", "padding", "gap", "outline", "b", "Padding is inside the border; margin is outside."),
+    ("linux", "Which command lists files in a directory?", "cd", "ls", "rm", "cat", "b", "ls lists directory contents."),
+    ("linux", "chmod is used to...", "Change file permissions", "Change directory", "Show processes", "Copy files", "a", "chmod changes file mode (permissions)."),
+    ("statistics", "The median of 3, 7, 9, 15, 100 is...", "9", "26.8", "7", "15", "a", "The middle value in sorted order is 9."),
+    ("statistics", "Standard deviation measures...", "The centre of data", "Spread around the mean", "The maximum", "The count", "b", "It measures typical distance from the mean."),
+    ("financial-accounting", "The accounting equation is...", "Assets = Liabilities + Equity", "Assets = Revenue - Expenses", "Equity = Assets + Liabilities", "Liabilities = Assets + Equity", "a", "Assets are funded by liabilities and owner's equity."),
+    ("financial-accounting", "Which statement shows profit or loss for a period?", "Balance sheet", "Income statement", "Trial balance", "Cash book only", "b", "The income statement (profit and loss account) reports performance."),
+    ("machine-learning", "Overfitting means a model...", "Performs well on training data but poorly on new data", "Is too small", "Trains too fast", "Has no parameters", "a", "It memorises training data instead of generalising."),
+    ("marketing-fundamentals", "Which of these is part of the classic 4Ps?", "Profit", "Price", "People only", "Planning", "b", "Product, Price, Place, Promotion."),
+]
