@@ -31,7 +31,7 @@ NAVORA is a working, tested Flask application in `E:\QUANTUM COMPUTING PROJECT\n
 | 42 | Content seeding | Done, no seeded ratings or prices; Bengali resources: none yet |
 | 48-50 | Discovery mode, gamification (light), demo mode | Done |
 | 51-57 | Viva docs, tests, errors, GitHub prep, docs, presentation | Done (see docs/) |
-| 63 PHASE 7 | GitHub | **Not done**: `git` is not installed on this machine, so no repository or commits were created. `.gitignore` and structure are ready |
+| 63 PHASE 7 | GitHub | Done: local repo with logical commits, pushed to GitHub `main`; no secrets tracked (`.env`, `instance/`, `.venv` ignored) |
 | 63 PHASE 8 | Deployment | **Not done / not verified**; Procfile and docs prepared |
 
 ## Known issues / honest gaps
@@ -44,14 +44,13 @@ NAVORA is a working, tested Flask application in `E:\QUANTUM COMPUTING PROJECT\n
 * Legal pages are drafts and need professional review before commercial use.
 
 ## Next tasks
-1. Install git, move `navora/` to its own repo, `git init`, commit in logical steps, push.
-2. Deploy (docs/deployment.md) and re-run `scripts/verify_links.py --apply`; have an admin manually verify resources.
-3. Add Hindi/Bengali resources and translate more templates.
-4. Accessibility audit (axe + screen reader); real browser tests.
-5. Try the LLM adapter with a real key.
+1. Deploy (docs/deployment.md) and re-run `scripts/verify_links.py --apply`; have an admin manually verify resources.
+2. Add Hindi/Bengali resources and translate more templates.
+3. Accessibility audit (axe + screen reader); real browser tests.
+4. Try the LLM adapter with a real key.
 
 ## Files / commands used
-Created everything under `navora/` (app, seed, tests, docs, scripts). Commands: `python -m venv .venv`, `pip install flask pytest`, `python -m seed.seed --reset`, `python -m pytest tests -q`, `python scripts/verify_links.py [--apply]`, `python run.py`.
+Created everything in the project root (app, seed, tests, docs, scripts). Commands: `python -m venv .venv`, `pip install flask pytest`, `python -m seed.seed --reset`, `python -m pytest tests -q`, `python scripts/verify_links.py [--apply]`, `python run.py`.
 
 ## Continuation protocol
 If resuming: read this file, run `python -m pytest tests -q`, then work through "Next tasks".

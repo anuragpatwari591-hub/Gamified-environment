@@ -1,4 +1,4 @@
-﻿# NAVORA - a personal learning navigator
+# NAVORA - a personal learning navigator
 
 > **Stop searching. Start knowing what to learn next.**
 
@@ -31,7 +31,8 @@ It is built as a B.Tech IT project with a deliberately explainable stack: **Pyth
 ## Quick start (Windows PowerShell; on macOS/Linux use `python3` and `source .venv/bin/activate`)
 
 ```powershell
-cd navora
+git clone https://github.com/anuragpatwari591-hub/Gamified-environment.git
+cd Gamified-environment
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements-dev.txt
@@ -56,7 +57,7 @@ python -m pytest tests -q
 ## Project structure
 
 ```
-navora/
+Gamified-environment/
   app/
     __init__.py          application factory, error handlers
     db.py  security.py  i18n.py
