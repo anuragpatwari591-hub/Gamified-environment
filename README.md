@@ -48,6 +48,10 @@ Captured from the running app with the seeded demo student (all activity shown i
 |---|---|---|
 | ![Skill gap](docs/screenshots/07-skill-gap.png) | ![Mobile](docs/screenshots/08-dashboard-mobile.png) | ![Admin](docs/screenshots/09-admin-analytics.png) |
 
+## Windows: double-click to run
+
+Double-click **`Start NAVORA.bat`**. On the first run it creates the virtual environment, installs Flask and seeds the database (needs Python 3.10+ installed). It then starts the app and opens http://127.0.0.1:5057 in your browser. Keep the black window open while you use NAVORA; close it to stop.
+
 ## Quick start (Windows PowerShell; on macOS/Linux use `python3` and `source .venv/bin/activate`)
 
 ```powershell
