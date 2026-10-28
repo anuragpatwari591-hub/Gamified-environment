@@ -3,7 +3,7 @@
 _Last updated: 2026-10-28_
 
 ## Current state
-NAVORA is a working, tested Flask application in `E:\QUANTUM COMPUTING PROJECT\navora\`. The parent folder holds an unrelated quantum-search project; it was left untouched. **Move `navora/` to its own folder before putting it on GitHub.**
+NAVORA is a working, tested Flask application in `E:\Gamified learning environment\`, separate from the unrelated quantum-search project (which stays in `E:\QUANTUM COMPUTING PROJECT`). Published at https://github.com/anuragpatwari591-hub/Gamified-environment (branch `main`).
 
 * Run: see README quick start. 84/84 automated tests pass (`python -m pytest tests -q`).
 * Seeded data: 74 real third-party resources, 33 skills, 18 streams, 10 careers with roadmaps, 24 projects, 34 quiz questions, a demo student and an admin account.
