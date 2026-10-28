@@ -1,0 +1,57 @@
+{% macro dur(m) %}{% if m %}about {% if m >= 60 %}{{ (m / 60) | round(1) | string | replace('.0', '') }} h{% else %}{{ m }} min{% endif %}{% else %}Duration not listed{% endif %}{% endmacro %}
+
+{% macro price(r) %}{% if r.pricing == 'free' %}<span class="pill free">Free</span>{% elif r.pricing == 'freemium' %}<span class="pill free">Free + paid tiers</span>{% else %}<span class="pill paid">Paid{% if r.price_inr %} &middot; &#8377;{{ '{:,}'.format(r.price_inr) }}{% endif %}</span>{% endif %}{% endmacro %}
+
+{% macro bar(pct, thin=false) %}<div class="progress {{ 'thin' if thin }}" role="progressbar" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100"><i style="width:{{ pct }}%"></i></div>{% endmacro %}
+
+{% macro why(w) %}
+<div class="why"><strong>Why this?</strong> {{ w.headline }}
+  <ul>{% for r in w.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+  {% if w.caveats %}<ul class="caveat">{% for c in w.caveats %}<li>{{ c }}</li>{% endfor %}</ul>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro feedback(rid, reasons) %}
+<div data-fb class="small">
+  <span class="muted">Was this useful?</span>
+  <form method="post" action="{{ url_for('learner.rec_feedback', rid=rid) }}" data-fetch style="display:inline"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="useful" value="1"><button class="btn btn-ghost btn-sm">Yes</button></form>
+  <button type="button" class="btn btn-ghost btn-sm" data-fb-no>No</button>
+  <div class="fb-reasons">
+    {% for k, v in reasons.items() %}
+    <form method="post" action="{{ url_for('learner.rec_feedback', rid=rid) }}" data-fetch style="display:inline"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="useful" value="0"><input type="hidden" name="reason" value="{{ k }}"><button class="btn btn-ghost btn-sm">{{ v }}</button></form>
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}
+
+{% macro resource_card(r, score=None, compare=true) %}
+<article class="card hover res-card">
+  <div class="top">
+    <div>
+      <div class="row" style="gap:6px;margin-bottom:6px">{{ price(r) }}<span class="pill">{{ ['','Beginner','Intermediate','Advanced'][r.difficulty] }}</span>{% if r.language != 'English' %}<span class="pill">{{ r.language }}</span>{% endif %}</div>
+      <h3 style="margin:0"><a href="{{ url_for('main.resource_detail', rid=r.id) }}">{{ r.title }}</a></h3>
+      <div class="small muted">{{ r.provider }} &middot; {{ r.resource_type }} &middot; {{ dur(r.duration_min) }}</div>
+    </div>
+    {% if score is not none %}<div class="score" style="--p:{{ score }}" title="Match score {{ score }}/100"><b>{{ score }}</b></div>{% endif %}
+  </div>
+  <p class="small" style="margin:0">{{ r.description[:150] }}{% if r.description|length > 150 %}&hellip;{% endif %}</p>
+  <div class="small muted">{% if r.rating is not none %}External rating {{ r.rating }}/5 ({{ r.rating_source }}){% else %}Rating unavailable{% endif %}</div>
+  {% if compare %}<label class="compare-pick"><input type="checkbox" value="{{ r.id }}"> Compare</label>{% endif %}
+</article>
+{% endmacro %}
+
+{% macro sponsored_box(items) %}
+{% for s in items %}
+<aside class="card" style="border-style:dashed" aria-label="Sponsored content">
+  <span class="pill sponsored">Sponsored</span> {% if s.is_demo %}<span class="pill demo">Demo Data</span>{% endif %}
+  <h3 style="margin-top:8px">{{ s.title }}</h3><p class="small">{{ s.blurb }}</p>
+  <p class="small muted">Sponsor: {{ s.sponsor }}. Sponsored placements are paid for and never mixed into organic recommendations. <a href="{{ url_for('main.disclosure') }}">Learn more</a></p>
+</aside>
+{% endfor %}
+{% endmacro %}
+
+{% macro empty(title, text, link=None, label=None) %}
+<div class="empty"><h3>{{ title }}</h3><p>{{ text }}</p>{% if link %}<a class="btn btn-primary" href="{{ link }}">{{ label }}</a>{% endif %}</div>
+{% endmacro %}
+
+{% macro csrf() %}<input type="hidden" name="_csrf" value="{{ csrf_token() }}">{% endmacro %}

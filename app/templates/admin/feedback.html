@@ -1,0 +1,8 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<h1 style="font-size:1.8rem">Feedback</h1>
+<div class="grid g2">
+<div class="card"><h3>Recommendation feedback</h3>{% for f in fb %}<div class="row between small" style="padding:4px 0"><span>{{ 'Useful' if f.useful else 'Not useful' }}{% if f.reason %}: {{ f.reason.replace('_', ' ') }}{% endif %}</span><strong>{{ f.n }}</strong></div>{% else %}<p class="muted small">No feedback yet.</p>{% endfor %}</div>
+<div class="card"><h3>Student reviews</h3>{% for r in reviews %}<p class="small" style="margin:6px 0"><strong>{{ r.title }}</strong> - {{ r.rating }}/5 by {{ r.name }}<br>{{ r.review }}</p>{% else %}<p class="muted small">No reviews yet.</p>{% endfor %}</div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_macros.html" import price, dur, csrf with context %}
+{% block title %}{{ c.title }} - skills, roadmap and free resources - NAVORA{% endblock %}
+{% block desc %}{{ c.description }}{% endblock %}
+{% block content %}
+<section class="section"><div class="wrap">
+  <p class="crumbs"><a href="{{ url_for('main.careers') }}">Careers</a> / {{ c.title }}</p>
+  <h1>{{ c.title }}</h1><p class="lead">{{ c.description }}</p>
+  <div class="row"><a class="btn btn-primary" href="{{ url_for('auth.register') }}">Make this my goal</a>
+  {% if user and rm %}<form method="post" action="{{ url_for('learner.bookmark_toggle') }}">{{ csrf() }}<input type="hidden" name="kind" value="roadmap"><input type="hidden" name="ref_id" value="{{ rm.id }}"><input type="hidden" name="folder" value="Career"><button class="btn btn-ghost">Save roadmap</button></form>{% endif %}</div>
+
+  <div class="grid g2" style="margin-top:28px">
+    <div class="card"><h2 style="font-size:1.2rem">Required skills</h2>
+      {% for s in skills %}<div style="margin:10px 0"><div class="row between small"><a href="{{ url_for('main.skill_detail', slug=s.slug) }}">{{ s.name }}</a><span class="muted">target {{ s.required_level }}%</span></div><div class="progress thin"><i style="width:{{ s.required_level }}%"></i></div></div>{% endfor %}
+      <p class="small muted">Targets are NAVORA's editorial estimates of a sensible entry level, not employer requirements.</p></div>
+    <div class="card stack"><div><h3>Typical degree backgrounds</h3><p class="muted small">{{ c.degree_backgrounds }}</p></div>
+      <div><h3>Certifications</h3><p class="muted small">{{ c.certifications }}</p></div>
+      <div><h3>Portfolio requirements</h3><p class="muted small">{{ c.portfolio_requirements }}</p></div>
+      <div><h3>Interview preparation</h3><p class="muted small">{{ c.interview_prep }}</p></div></div>
+  </div>
+
+  {% if rm %}<h2 style="margin-top:36px">{{ rm.title }}</h2><p class="muted">{{ rm.description }}</p>
+  <ol class="timeline">{% for st in stages %}<li><span class="dot">{{ st.position }}</span><div class="card" style="padding:16px"><div class="row between"><h3 style="margin:0">{{ st.title }}</h3><span class="pill">~{{ st.est_hours }} h</span></div>
+    <p class="small muted" style="margin:6px 0 0">{{ st.concepts }}</p>{% if st.milestone %}<p class="small" style="margin:6px 0 0"><strong>Milestone:</strong> {{ st.milestone }}</p>{% endif %}</div></li>{% endfor %}</ol>{% endif %}
+
+  <h2 style="margin-top:28px">Free resources</h2>
+  <div class="grid g3">{% for r in free_res %}<a class="card hover" href="{{ url_for('main.resource_detail', rid=r.id) }}" style="color:inherit;text-decoration:none"><h3>{{ r.title }}</h3><div class="small muted">{{ r.provider }}</div></a>{% else %}<p class="muted">None listed yet.</p>{% endfor %}</div>
+  {% if paid_res %}<h2 style="margin-top:28px">Paid or freemium options</h2><p class="small muted">Shown with free alternatives on their detail pages. Prices are set by providers.</p>
+  <div class="grid g3">{% for r in paid_res %}<a class="card hover" href="{{ url_for('main.resource_detail', rid=r.id) }}" style="color:inherit;text-decoration:none"><h3>{{ r.title }}</h3><div class="small muted">{{ r.provider }}</div></a>{% endfor %}</div>{% endif %}
+  {% if projects %}<h2 style="margin-top:28px">Projects to build</h2>
+  <div class="grid g3">{% for p in projects %}<div class="card"><h3>{{ p.title }}</h3><p class="small muted">{{ p.description }}</p><span class="pill">{{ ['','Beginner','Intermediate','Advanced'][p.difficulty] }}</span> <span class="pill">~{{ p.est_hours }} h</span></div>{% endfor %}</div>{% endif %}
+</div></section>
+{% endblock %}

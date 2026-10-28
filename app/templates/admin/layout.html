@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Admin - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap admin-layout">
+  <nav class="side card" aria-label="Admin" style="align-self:start;padding:12px">
+    {% set ep = request.endpoint %}
+    <a href="{{ url_for('admin.dashboard') }}" {% if ep == 'admin.dashboard' %}aria-current="page"{% endif %}>Analytics</a>
+    <a href="{{ url_for('admin.users') }}" {% if ep == 'admin.users' %}aria-current="page"{% endif %}>Users</a>
+    {% for k, t_ in [('resources','Resources'),('skills','Skills'),('careers','Careers'),('streams','Streams'),('roadmaps','Roadmaps'),('stages','Roadmap stages'),('projects','Projects'),('quiz','Quiz questions'),('sponsored','Sponsored')] %}
+    <a href="{{ url_for('admin.e_list', name=k) }}" {% if request.view_args and request.view_args.get('name') == k %}aria-current="page"{% endif %}>{{ t_ }}</a>{% endfor %}
+    <a href="{{ url_for('admin.affiliates') }}" {% if ep == 'admin.affiliates' %}aria-current="page"{% endif %}>Affiliate links</a>
+    <a href="{{ url_for('admin.reports') }}" {% if ep == 'admin.reports' %}aria-current="page"{% endif %}>Reports</a>
+    <a href="{{ url_for('admin.feedback') }}" {% if ep == 'admin.feedback' %}aria-current="page"{% endif %}>Feedback</a>
+    <a href="{{ url_for('admin.audit_log') }}" {% if ep == 'admin.audit_log' %}aria-current="page"{% endif %}>Audit log</a>
+  </nav>
+  <div>{% block admin %}{% endblock %}</div>
+</div></section>
+{% endblock %}

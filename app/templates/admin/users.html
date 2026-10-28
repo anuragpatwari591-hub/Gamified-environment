@@ -1,0 +1,11 @@
+{% extends "admin/layout.html" %}
+{% from "_macros.html" import csrf with context %}
+{% block admin %}
+<h1 style="font-size:1.8rem">Users</h1>
+<form method="get" class="row" style="margin:14px 0" role="search"><label for="q" style="position:absolute;left:-999px">Search users</label><input id="q" name="q" value="{{ text }}" placeholder="Name or email" style="max-width:320px"><button class="btn btn-ghost btn-sm">Search</button></form>
+<div class="card table-wrap" style="padding:0"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Onboarded</th><th>Study min</th><th>Last login</th><th>Status</th><th></th></tr></thead><tbody>
+{% for u in rows %}<tr><td>{{ u.name }} {% if u.is_demo %}<span class="pill demo">Demo</span>{% endif %}</td><td>{{ u.email }}</td><td>{{ u.role }}</td><td>{{ 'Yes' if u.onboarded else 'No' }}</td><td>{{ u.minutes }}</td><td>{{ u.last_login_at or '-' }}</td>
+  <td><span class="pill {{ 'free' if u.is_active else 'bad' }}">{{ 'Active' if u.is_active else 'Deactivated' }}</span></td>
+  <td>{% if u.id != user.id %}<form method="post" action="{{ url_for('admin.user_toggle', uid=u.id) }}">{{ csrf() }}<button class="btn btn-ghost btn-sm">{{ 'Deactivate' if u.is_active else 'Reactivate' }}</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="8" class="muted">No users found.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

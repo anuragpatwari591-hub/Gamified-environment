@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% from "_macros.html" import price, dur, why as why_box, feedback, bar, csrf with context %}
+{% block title %}{{ r.title }} - {{ r.provider }} - NAVORA{% endblock %}
+{% block desc %}{{ r.description[:155] }}{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <p class="crumbs"><a href="{{ url_for('main.resources') }}">Resources</a> / {{ r.title }}</p>
+  <div class="grid rd-grid" id="rd">
+    <div class="stack">
+      <div class="row" style="gap:6px">{{ price(r) }}<span class="pill">{{ diff[r.difficulty] }}</span><span class="pill">{{ r.resource_type }}</span><span class="pill">{{ r.format }}</span><span class="pill">{{ r.language }}</span>
+        {% if r.status == 'broken' %}<span class="pill bad">Link reported broken</span>{% elif r.status == 'outdated' %}<span class="pill bad">May be outdated</span>{% endif %}</div>
+      <h1 style="font-size:2rem;margin:0">{{ r.title }}</h1>
+      <p class="muted" style="margin:0">by {{ r.provider }} &middot; {{ dur(r.duration_min) }}{% if r.duration_min %} <span class="small">(editor estimate)</span>{% endif %}</p>
+      <p>{{ r.description }}</p>
+      <div class="row"><a class="btn btn-primary btn-lg" href="{{ url_for('main.go', rid=r.id) }}" rel="noopener nofollow sponsored" target="_blank">Open original source &#8599;</a>
+        {% if user %}
+        <form method="post" action="{{ url_for('learner.res_start', rid=r.id) }}">{{ csrf() }}<button class="btn btn-ghost">{{ 'In progress' if prog else 'Start' }}</button></form>
+        <form method="post" action="{{ url_for('learner.bookmark_toggle') }}" class="row" style="gap:6px">{{ csrf() }}<input type="hidden" name="kind" value="resource"><input type="hidden" name="ref_id" value="{{ r.id }}">
+          <label class="small" for="folder" style="margin:0;position:absolute;left:-999px">Folder</label>
+          <select id="folder" name="folder" style="width:auto">{% for f in folders %}<option {{ 'selected' if saved and saved.folder == f }}>{{ f }}</option>{% endfor %}</select>
+          <button class="btn btn-ghost">{{ 'Remove saved' if saved else 'Save' }}</button></form>
+        {% endif %}</div>
+      {% if r.affiliate_url %}<p class="notice info small">Affiliate disclosure: the button above may use an affiliate link. NAVORA may earn a commission at no extra cost to you. This never changes how resources are ranked. <a href="{{ url_for('main.disclosure') }}">Details</a></p>{% endif %}
+      {% if why %}<div>{{ why_box(why) }}<div class="row between" style="margin-top:10px"><div class="row"><div class="score" style="--p:{{ ranked.score }}"><b>{{ ranked.score }}</b></div><span class="small muted">Your match score (0-100)</span></div></div>
+        <div style="margin-top:10px">{{ feedback(r.id, {'too_difficult':'Too difficult','too_long':'Too long','boring':'Boring','wrong_topic':'Wrong topic','already_knew':'Already knew this','wrong_style':'Wrong style','not_relevant':'Not relevant'}) }}</div></div>
+      {% else %}<div class="notice info"><a href="{{ url_for('auth.login') }}">Log in</a> to see why this resource may (or may not) fit you.</div>{% endif %}
+
+      {% if r.prerequisites %}<div class="card"><h3>Prerequisites</h3><p class="muted" style="margin:0">{{ r.prerequisites }}</p></div>{% endif %}
+      {% if r.strengths or r.limitations or r.suitable_for %}<div class="card"><h3>{{ 'Why consider this' if r.pricing == 'paid' else 'Notes' }}</h3>
+        {% if r.strengths %}<p><strong>Strengths:</strong> {{ r.strengths }}</p>{% endif %}{% if r.limitations %}<p><strong>Limitations:</strong> {{ r.limitations }}</p>{% endif %}{% if r.suitable_for %}<p style="margin:0"><strong>Suitable for:</strong> {{ r.suitable_for }}</p>{% endif %}</div>{% endif %}
+      {% if r.pricing == 'paid' %}<div class="card"><h3>Free alternatives</h3>{% for f in free_alts %}<p style="margin:4px 0"><span class="pill free">Free</span> <a href="{{ url_for('main.resource_detail', rid=f.id) }}">{{ f.title }}</a> <span class="muted small">- {{ f.provider }}</span></p>{% else %}<p class="muted">No free alternative listed yet.</p>{% endfor %}
+        <p class="small muted" style="margin:10px 0 0">Price: {{ ('INR ' ~ r.price_inr) if r.price_inr else r.price_note or 'check the provider' }}. Always verify current pricing on the provider's site.</p></div>{% endif %}
+
+      <div class="card"><h3>Student reviews on NAVORA</h3>
+        {% if r.community and r.community[1] %}<p>{{ '%.1f'|format(r.community[0]) }}/5 from {{ r.community[1] }} NAVORA student{{ '' if r.community[1] == 1 else 's' }} (separate from the external rating).</p>{% else %}<p class="muted">No student reviews yet.</p>{% endif %}
+        {% for rv in reviews %}<p class="small"><strong>{{ rv.name }}</strong> &middot; {{ rv.rating }}/5<br>{{ rv.review }}</p>{% endfor %}
+        {% if user %}<form method="post" action="{{ url_for('learner.review', rid=r.id) }}" class="stack">{{ csrf() }}
+          <div class="row"><div><label for="rating">Your rating</label><select id="rating" name="rating" required style="width:auto"><option value="">Choose</option>{% for i in range(5,0,-1) %}<option value="{{ i }}" {{ 'selected' if mine and mine.rating == i }}>{{ i }} / 5</option>{% endfor %}</select></div>
+          <div><label for="dfb">Difficulty</label><select id="dfb" name="difficulty_feedback" style="width:auto"><option value="">-</option><option value="too_easy">Too easy</option><option value="just_right">Just right</option><option value="too_hard">Too hard</option></select></div></div>
+          <div><label for="review">Short review (optional)</label><textarea id="review" name="review" maxlength="600">{{ mine.review if mine }}</textarea></div>
+          <button class="btn btn-ghost btn-sm">Save review</button></form>{% endif %}</div>
+    </div>
+
+    <aside class="stack">
+      <div class="card"><h3>Trust &amp; quality</h3>
+        <div class="row"><div class="score" style="--p:{{ qual.score }}"><b>{{ qual.score }}</b></div><div><strong>Quality score</strong><div class="small muted">General, not personal</div></div></div>
+        <table class="small"><tr><th>Source</th><td>{{ r.source_kind|capitalize }} &middot; {{ r.provider }}</td></tr>
+        <tr><th>External rating</th><td>{% if r.rating is not none %}{{ r.rating }}/5{% if r.rating_count %} ({{ '{:,}'.format(r.rating_count) }} ratings){% endif %} - {{ r.rating_source }}{% else %}Rating unavailable{% endif %}</td></tr>
+        <tr><th>Last verified</th><td>{{ r.last_verified_at or 'Not yet verified' }}</td></tr><tr><th>Status</th><td>{{ r.status }}</td></tr>
+        {% if r.verification_notes %}<tr><th>Notes</th><td>{{ r.verification_notes }}</td></tr>{% endif %}
+        <tr><th>Source URL</th><td style="word-break:break-all">{{ r.source_url or r.url }}</td></tr></table>
+        <p class="small muted" style="margin:8px 0 0">The quality score blends the external rating (when available), source credibility, freshness of verification and NAVORA student reviews. Missing signals are left out, never invented.</p></div>
+      {% if skills %}<div class="card"><h3>Skills covered</h3><div class="chips">{% for s in skills %}<a class="pill" href="{{ url_for('main.skill_detail', slug=s.slug) }}">{{ s.name }}</a>{% endfor %}</div></div>{% endif %}
+      {% if user and prog %}<div class="card"><h3>Your progress</h3>
+        {% if prog.status == 'completed' %}<p class="pill free">Completed</p>{% else %}
+        <form method="post" action="{{ url_for('learner.res_complete', rid=r.id) }}" class="stack">{{ csrf() }}<div><label for="mins">Minutes you spent (optional)</label><input id="mins" name="minutes" type="number" min="1" max="720"></div><button class="btn btn-primary btn-sm">Mark complete</button></form>{% endif %}</div>{% endif %}
+      <div class="card"><h3>Report a problem</h3>
+        <form method="post" action="{{ url_for('main.report', rid=r.id) }}" class="stack">{{ csrf() }}
+          <div><label for="kind">What is wrong?</label><select id="kind" name="kind" required><option value="">Choose</option><option value="broken_link">Broken link</option><option value="outdated">Outdated content</option><option value="misleading">Misleading information</option><option value="wrong_category">Incorrect category</option><option value="wrong_price">Wrong price</option></select></div>
+          <div><label for="note">Details (optional)</label><textarea id="note" name="note" maxlength="500" style="min-height:70px"></textarea></div>
+          <button class="btn btn-ghost btn-sm">Send report</button></form></div>
+    </aside>
+  </div>
+</div></section>
+{% endblock %}

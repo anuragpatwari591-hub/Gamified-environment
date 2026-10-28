@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_macros.html" import resource_card, sponsored_box, empty with context %}
+{% block title %}{% if text %}"{{ text }}" - {% endif %}Resource directory - NAVORA{% endblock %}
+{% block desc %}Search free-first courses, videos, docs, books and practice platforms, with honest ratings and clear pricing.{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <h1 style="font-size:2rem">Resource directory</h1>
+  <p class="muted">Free resources are listed alongside paid ones and clearly labelled. {% if user %}Cards show your personal match score.{% else %}<a href="{{ url_for('auth.register') }}">Sign up</a> to see personal match scores.{% endif %}</p>
+  <form method="get" class="card" role="search">
+    <div class="field"><label for="q">Search courses, skills, providers or topics</label><input id="q" type="search" name="q" value="{{ text }}" maxlength="80" placeholder="e.g. SQL joins, networking, accounting"></div>
+    <div class="filter-bar">
+      <div><label for="pricing">Price</label><select id="pricing" name="pricing"><option value="">Any</option>{% for v, l in [('free','Free'),('freemium','Free + paid tiers'),('paid','Paid')] %}<option value="{{ v }}" {{ 'selected' if a.get('pricing') == v }}>{{ l }}</option>{% endfor %}</select></div>
+      <div><label for="difficulty">Level</label><select id="difficulty" name="difficulty"><option value="">Any</option>{% for k, v in diff.items() %}<option value="{{ k }}" {{ 'selected' if a.get('difficulty') == k|string }}>{{ v }}</option>{% endfor %}</select></div>
+      <div><label for="format">Format</label><select id="format" name="format"><option value="">Any</option>{% for k, v in formats.items() %}<option value="{{ k }}" {{ 'selected' if a.get('format') == k }}>{{ v }}</option>{% endfor %}</select></div>
+      <div><label for="language">Language</label><select id="language" name="language"><option value="">Any</option>{% for l in facets.languages %}<option {{ 'selected' if a.get('language') == l }}>{{ l }}</option>{% endfor %}</select></div>
+      <div><label for="category">Topic area</label><select id="category" name="category"><option value="">Any</option>{% for l in facets.categories %}<option {{ 'selected' if a.get('category') == l }}>{{ l }}</option>{% endfor %}</select></div>
+      <div><label for="provider">Provider</label><select id="provider" name="provider"><option value="">Any</option>{% for l in facets.providers %}<option {{ 'selected' if a.get('provider') == l }}>{{ l }}</option>{% endfor %}</select></div>
+      <div><label for="max_minutes">Max duration (min)</label><input id="max_minutes" name="max_minutes" type="number" min="1" value="{{ a.get('max_minutes','') }}"></div>
+      <div><label for="sort">Sort</label><select id="sort" name="sort">{% for v, l in [('relevance','Best match'),('duration','Shortest'),('difficulty','Easiest first'),('newest','Newest')] %}<option value="{{ v }}" {{ 'selected' if a.get('sort') == v }}>{{ l }}</option>{% endfor %}</select></div>
+    </div>
+    <div class="row" style="margin-top:14px"><button class="btn btn-primary">Search</button><a class="btn btn-ghost" href="{{ url_for('main.resources') }}">Clear filters</a><span class="muted small">{{ rows|length }} result{{ '' if rows|length == 1 else 's' }}</span></div>
+  </form>
+
+  {% if related and (related.skills or related.careers or related.projects) %}
+  <div class="card" style="margin-top:16px"><strong class="small">Also matching:</strong>
+    <div class="chips" style="margin-top:8px">{% for s in related.skills %}<a class="pill" href="{{ url_for('main.skill_detail', slug=s.slug) }}">Skill: {{ s.name }}</a>{% endfor %}{% for c in related.careers %}<a class="pill" href="{{ url_for('main.career_detail', slug=c.slug) }}">Career: {{ c.title }}</a>{% endfor %}{% for p in related.projects %}<a class="pill" href="{{ url_for('learner.project_detail', pid=p.id) }}">Project: {{ p.title }}</a>{% endfor %}</div></div>{% endif %}
+
+  <div class="grid g3" style="margin-top:20px">
+    {% for r in rows %}{{ resource_card(r, ranked[r.id].score if ranked else none) }}
+    {% else %}<div style="grid-column:1/-1">{{ empty('No resources match that search', 'Try fewer filters or a broader word like "python" or "accounting". Missing something? Tell us through the report form on any resource.', url_for('main.resources'), 'Clear filters') }}</div>{% endfor %}
+  </div>
+  {% if sponsored %}<div style="margin-top:24px">{{ sponsored_box(sponsored) }}</div>{% endif %}
+  <div class="sticky-compare" id="compare-bar"><a id="compare-go" class="btn btn-primary" href="#">Compare selected (<span id="compare-n">0</span>)</a></div>
+</div></section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{# The signature card. Needs nm. #}
+<section class="card next-move" aria-labelledby="nm-title">
+  <span class="kicker">{{ t('next.title') }}</span>
+  <h2 id="nm-title" style="margin:6px 0 10px">{{ nm.title }}</h2>
+  <p><strong>{{ t('next.why') }}</strong> {{ nm.reason }}</p>
+  <div class="meta">
+    <span>&#9201; {{ t('next.time') }}: {{ nm.minutes }} min</span>
+    {% if nm.resource %}<span>{% if nm.resource.resource.pricing == 'free' %}&#10003; Free resource{% else %}Resource: {{ nm.resource.resource.pricing }}{% endif %}</span>{% endif %}
+    {% if nm.outcome %}<span>&#127942; Outcome: {{ nm.outcome }}</span>{% endif %}
+  </div>
+  {% if nm.resource %}<p style="margin:0 0 6px"><strong>Recommended:</strong> <a href="{{ url_for('main.resource_detail', rid=nm.resource.resource.id) }}">{{ nm.resource.resource.title }}</a> <span class="small">({{ nm.resource.resource.provider }})</span></p>{% endif %}
+  <p class="small" style="margin-bottom:16px"><strong>{{ t('next.after') }}:</strong> {{ nm.after }}</p>
+  <div class="row">
+    {% if nm.resource %}<a class="btn btn-primary" href="{{ url_for('main.resource_detail', rid=nm.resource.resource.id) }}">{{ t('next.start') }}</a>{% elif nm.kind == 'choose' %}<a class="btn btn-primary" href="{{ url_for('learner.profile') }}">Choose a career goal</a>{% else %}<a class="btn btn-primary" href="{{ url_for('learner.readiness') }}">Open Career Readiness</a>{% endif %}
+    {% if nm.get('project') %}<a class="btn btn-ghost" href="{{ url_for('learner.project_detail', pid=nm.project.id) }}">See the project</a>{% endif %}
+  </div>
+</section>

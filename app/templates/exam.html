@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar, empty with context %}
+{% block title %}Exam preparation - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:900px">
+  <div class="row between"><h1 style="font-size:2rem;margin:0">Exam preparation</h1>
+    {% if last_minute %}<a class="btn btn-ghost btn-sm" href="{{ url_for('learner.exam') }}">Back to full plan</a>{% else %}<a class="btn btn-ghost btn-sm" href="{{ url_for('learner.exam', mode='last-minute') }}">Last-minute mode</a>{% endif %}</div>
+  <p class="muted">{% if last_minute %}Last-minute mode: only weak and unfinished topics, nearest exam first. No new big topics - revise and practise.{% else %}Weak topics come first, the final two days before each exam are revision only.{% endif %}</p>
+  {% for p in plan %}<div class="card" style="margin-top:16px">
+    <div class="row between"><h2 style="font-size:1.3rem;margin:0">{{ p.s.name }}</h2><span class="pill {{ 'bad' if p.days <= 7 }}">{{ p.days }} day{{ '' if p.days == 1 else 's' }} left</span></div>
+    {% if p.total %}{{ bar(((p.total - p.topics|length) * 100 / p.total)|round|int, true) }}<p class="small muted">{{ p.total - p.topics|length }} of {{ p.total }} topics done</p>{% endif %}
+    {% if last_minute %}<h3 style="font-size:1rem">Focus on</h3><ul>{% for t in (p.weak or p.topics[:5]) %}<li>{{ t.topic }}</li>{% else %}<li>Everything is done - do a full self-test.</li>{% endfor %}</ul>
+    {% else %}<h3 style="font-size:1rem">Revision schedule</h3>
+      {% for day, ts in p.sched %}<p class="small" style="margin:4px 0"><strong>{{ day.strftime('%a %d %b') }}:</strong> {{ ts|join('; ') }}</p>{% else %}<p class="small muted">No pending topics - spend your time on practice questions.</p>{% endfor %}
+      {% if p.days >= 2 %}<p class="small muted">Last 2 days: revise everything, solve past papers.</p>{% endif %}{% endif %}
+  </div>{% else %}{{ empty('No upcoming exams', 'Add subjects with exam dates in Semester mode to get a revision schedule.', url_for('learner.semester'), 'Open Semester mode') }}{% endfor %}
+  <h2 style="margin-top:30px;font-size:1.3rem">Practice quizzes</h2>
+  <div class="chips">{% for qz in quizzes %}<a class="pill" style="font-size:.9rem;padding:8px 14px" href="{{ url_for('learner.quiz', sid=qz.id) }}">{{ qz.name }}</a>{% endfor %}</div>
+  <p class="small muted" style="margin-top:12px">Quizzes are general skill practice, not your university syllabus. Use your institution's past papers for exam-specific practice.</p>
+</div></section>
+{% endblock %}

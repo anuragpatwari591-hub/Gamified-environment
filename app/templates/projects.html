@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Projects - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <h1 style="font-size:2rem">Build something</h1><p class="muted">Courses teach; projects prove. Projects matching your current level and skill gaps are listed first.</p>
+  <div class="grid g3">{% for r in rows %}{% set p = r.p %}
+    <a class="card hover" href="{{ url_for('learner.project_detail', pid=p.id) }}" style="color:inherit;text-decoration:none">
+      <div class="row" style="gap:6px;margin-bottom:6px"><span class="pill">{{ diff[p.difficulty] }}</span><span class="pill">~{{ p.est_hours }} h</span>{% if r.fit %}<span class="pill free">Fits your level</span>{% endif %}{% if r.status == 'completed' %}<span class="pill free">Completed</span>{% elif r.status %}<span class="pill demo">In progress</span>{% endif %}</div>
+      <h3>{{ p.title }}</h3><p class="small muted">{{ p.description }}</p><div class="small muted">Skills: {% for s in r.skills %}{{ s.name }}{{ ', ' if not loop.last }}{% endfor %}</div></a>{% endfor %}</div>
+</div></section>
+{% endblock %}

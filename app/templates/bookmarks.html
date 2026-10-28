@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "_macros.html" import empty, csrf with context %}
+{% block title %}Saved - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <h1 style="font-size:2rem">Saved for later</h1>
+  {% if not rows %}{{ empty('Nothing saved yet', 'Save resources, projects and roadmaps into folders such as Learn Later, Interview or Semester.', url_for('main.resources'), 'Browse resources') }}
+  {% else %}{% for f in folders %}{% set items = rows|selectattr('b.folder', 'equalto', f)|list %}{% if items %}
+    <h2 style="font-size:1.2rem;margin-top:24px">{{ f }}</h2>
+    <div class="grid g3">{% for r in items %}<div class="card"><span class="pill">{{ r.b.kind }}</span><h3 style="margin-top:8px"><a href="{{ r.link }}">{{ r.item.title }}</a></h3><div class="small muted">{{ r.item.provider }}</div>
+      <form method="post" action="{{ url_for('learner.bookmark_toggle') }}" class="row" style="margin-top:10px;gap:6px">{{ csrf() }}<input type="hidden" name="kind" value="{{ r.b.kind }}"><input type="hidden" name="ref_id" value="{{ r.b.ref_id }}">
+        <label for="f{{ r.b.id }}" style="position:absolute;left:-999px">Move to folder</label><select id="f{{ r.b.id }}" name="folder" style="width:auto">{% for ff in folders %}<option {{ 'selected' if ff == r.b.folder }}>{{ ff }}</option>{% endfor %}</select>
+        <button class="btn btn-ghost btn-sm" name="move" value="1">Move</button><button class="btn btn-danger btn-sm">Remove</button></form></div>{% endfor %}</div>{% endif %}{% endfor %}{% endif %}
+</div></section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}I don't know what to learn - NAVORA{% endblock %}
+{% block desc %}Answer seven quick questions and see several possible career pathways, a starter roadmap, free resources and a first project.{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:820px">
+  {% if not results %}
+  <h1>I don't know what to learn</h1>
+  <p class="lead">Seven quick questions. We will suggest <strong>several</strong> pathways that may fit your answers - not decide your future.</p>
+  <form method="post" class="stack">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    {% for qt, opts in questions %}{% set i = loop.index0 %}
+    <fieldset class="card" style="border:1px solid var(--line)"><legend style="font-weight:700;padding:0 8px">{{ loop.index }}. {{ qt }}</legend>
+      <div class="chips">{% for label, tags in opts %}<label class="chip-opt"><input type="radio" name="q{{ i }}" value="{{ loop.index0 }}"><span>{{ label }}</span></label>{% endfor %}</div></fieldset>
+    {% endfor %}
+    <button class="btn btn-primary btn-lg">Show me pathways</button>
+  </form>
+  {% else %}
+  <h1>Pathways that may fit you</h1>
+  <p class="lead">Based only on your answers. These are starting points to explore, not predictions.</p>
+  <div class="stack">{% for r in results %}
+    <div class="card"><div class="row between"><h2 style="margin:0;font-size:1.4rem">{{ r.career.title }}</h2><span class="pill">Pathway {{ loop.index }}</span></div>
+      <p class="muted">{{ r.career.description }}</p>
+      <p class="small"><strong>Why it may fit:</strong> your answers pointed to {{ r.matched|join(', ') }}.</p>
+      {% if r.first_stage %}<p class="small"><strong>Starter step:</strong> {{ r.first_stage }}</p>{% endif %}
+      {% if r.resources %}<p class="small"><strong>Free resources to start:</strong> {% for x in r.resources %}<a href="{{ url_for('main.resource_detail', rid=x.id) }}">{{ x.title }}</a>{{ ', ' if not loop.last }}{% endfor %}</p>{% endif %}
+      {% if r.project %}<p class="small"><strong>First project:</strong> {{ r.project.title }}</p>{% endif %}
+      <div class="row"><a class="btn btn-ghost btn-sm" href="{{ url_for('main.career_detail', slug=r.career.slug) }}">See full roadmap</a><a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}">Choose this and build my plan</a></div></div>
+  {% endfor %}</div>
+  <p style="margin-top:20px"><a href="{{ url_for('main.discover') }}">&larr; Retake the questions</a></p>
+  {% endif %}
+</div></section>
+{% endblock %}

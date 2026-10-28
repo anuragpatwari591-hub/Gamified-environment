@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_macros.html" import price, dur, empty with context %}
+{% block title %}Compare resources - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <h1 style="font-size:2rem">Compare resources</h1>
+  <p class="muted">We do not rank these against each other. The last row says who each one may suit best, so you can decide.</p>
+  {% if items|length < 2 %}{{ empty('Pick at least two resources', 'Tick "Compare" on two or three resources in the directory.', url_for('main.resources'), 'Go to resources') }}
+  {% else %}
+  <div class="table-wrap card" style="padding:0"><table>
+    <tr><th></th>{% for r in items %}<th style="font-size:.95rem;text-transform:none;color:var(--ink)"><a href="{{ url_for('main.resource_detail', rid=r.id) }}">{{ r.title }}</a></th>{% endfor %}</tr>
+    <tr><th>Provider</th>{% for r in items %}<td>{{ r.provider }}</td>{% endfor %}</tr>
+    <tr><th>Price</th>{% for r in items %}<td>{{ price(r) }}{% if r.pricing != 'free' and not r.price_inr %}<div class="small muted">Check provider for price</div>{% endif %}</td>{% endfor %}</tr>
+    <tr><th>Duration</th>{% for r in items %}<td>{{ dur(r.duration_min) }}</td>{% endfor %}</tr>
+    <tr><th>Level</th>{% for r in items %}<td>{{ diff[r.difficulty] }}</td>{% endfor %}</tr>
+    <tr><th>Language</th>{% for r in items %}<td>{{ r.language }}</td>{% endfor %}</tr>
+    <tr><th>Learning style</th>{% for r in items %}<td>{{ r.format|capitalize }}</td>{% endfor %}</tr>
+    <tr><th>Type</th>{% for r in items %}<td>{{ r.resource_type }}</td>{% endfor %}</tr>
+    <tr><th>Source</th>{% for r in items %}<td>{{ r.source_kind }}</td>{% endfor %}</tr>
+    <tr><th>External rating</th>{% for r in items %}<td>{% if r.rating is not none %}{{ r.rating }}/5 ({{ r.rating_source }}){% else %}Rating unavailable{% endif %}</td>{% endfor %}</tr>
+    <tr><th>Last verified</th>{% for r in items %}<td>{{ r.last_verified_at or 'Not yet verified' }}</td>{% endfor %}</tr>
+    <tr><th>Best suited for students who prefer...</th>{% for r in items %}<td>
+      {% if r.suitable_for %}{{ r.suitable_for }}{% else %}{{ {'video':'watching and listening','reading':'reading at their own pace','interactive':'learning by doing in the browser','practice':'solving exercises','project':'building something real'}[r.format] }}{% if r.difficulty == 1 %}, starting from scratch{% elif r.difficulty == 3 %}, with a solid foundation already{% endif %}.{% endif %}</td>{% endfor %}</tr>
+  </table></div>{% endif %}
+</div></section>
+{% endblock %}

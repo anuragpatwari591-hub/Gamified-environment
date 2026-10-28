@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Skills - NAVORA{% endblock %}
+{% block desc %}Skills mapped to resources, projects and careers.{% endblock %}
+{% block content %}
+<section class="section"><div class="wrap">
+  <h1>Skills</h1><p class="lead">Every skill links to free-first resources, projects and the careers that need it.</p>
+  {% set ns = namespace(c='') %}
+  {% for s in skills %}{% if s.category != ns.c %}{% set ns.c = s.category %}<h2 style="margin-top:26px;font-size:1.15rem">{{ s.category }}</h2><div class="grid g4">{% endif %}
+    <a class="card hover" style="color:inherit;text-decoration:none;padding:16px" href="{{ url_for('main.skill_detail', slug=s.slug) }}"><strong>{{ s.name }}</strong><div class="small muted">{{ s.n }} resource{{ '' if s.n == 1 else 's' }}</div></a>
+    {% if loop.last or skills[loop.index0 + 1].category != s.category %}</div>{% endif %}{% endfor %}
+</div></section>
+{% endblock %}

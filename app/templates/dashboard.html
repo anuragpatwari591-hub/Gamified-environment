@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar, why as why_box, feedback, price, dur, sponsored_box, empty with context %}
+{% block title %}Dashboard - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <div class="row between">
+    <div><h1 style="font-size:1.9rem;margin:0">{{ greet }}, {{ user.name.split()[0] }}.</h1>
+      <p class="muted" style="margin:4px 0 0">{{ p.stream_name or 'Your stream' }}{% if p.year %} &middot; Year {{ p.year }}{% endif %} &middot; Goal: {{ p.career_title or 'not chosen yet' }} {% if is_demo %}<span class="pill demo">Demo Data</span>{% endif %}</p></div>
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('learner.profile') }}">Edit Learning DNA</a>
+  </div>
+
+  <div class="grid dash-grid" style="margin-top:22px">
+    <div class="stack">
+      {% include "_nextmove.html" %}
+
+      <div class="card"><div class="row between"><h2 style="font-size:1.2rem;margin:0">Recommended next</h2><a class="small" href="{{ url_for('main.resources') }}">Browse all</a></div>
+        {% for item in recs %}{% set r = item.resource %}
+        <article style="padding:16px 0;border-top:1px solid var(--line);margin-top:14px">
+          <div class="row between" style="align-items:flex-start">
+            <div><div class="row" style="gap:6px;margin-bottom:4px">{{ price(r) }}<span class="pill">{{ ['','Beginner','Intermediate','Advanced'][r.difficulty] }}</span></div>
+              <h3 style="margin:0"><a href="{{ url_for('main.resource_detail', rid=r.id) }}">{{ r.title }}</a></h3><div class="small muted">{{ r.provider }} &middot; {{ dur(r.duration_min) }}</div></div>
+            <div class="score" style="--p:{{ item.score }}" title="Match score"><b>{{ item.score }}</b></div></div>
+          <div style="margin:10px 0">{{ why_box(item.why) }}</div>
+          {% if item.free_alternatives %}<p class="small muted">Free alternative: <a href="{{ url_for('main.resource_detail', rid=item.free_alternatives[0].id) }}">{{ item.free_alternatives[0].title }}</a></p>{% endif %}
+          {{ feedback(r.id, reasons) }}
+        </article>
+        {% else %}{{ empty('Nothing to recommend yet', 'Finish your Learning DNA and pick a goal to get recommendations.', url_for('learner.profile'), 'Update profile') }}{% endfor %}
+      </div>
+      {{ sponsored_box(sponsored) }}
+    </div>
+
+    <div class="stack">
+      <div class="card"><h3>{{ t('dash.week') }}</h3>
+        <div class="stat">{{ (snap.week_minutes / 60) | round(1) }} <span class="muted" style="font-size:1rem">/ {{ (snap.goal_minutes / 60) | round(1) }} h</span></div>
+        {{ bar([100, (100 * snap.week_minutes / snap.goal_minutes) | round | int] | min) }}
+        <div class="row between small" style="margin-top:12px"><span>&#128293; {{ t('dash.streak') }}: <strong>{{ snap.streak }} {{ t('dash.days') }}</strong></span><span>{{ snap.completed }} completed</span></div>
+        <form method="post" action="{{ url_for('learner.log_session') }}" class="row" style="margin-top:12px;gap:6px">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><label for="lm" style="position:absolute;left:-999px">Minutes studied</label>
+          <input id="lm" name="minutes" type="number" min="1" max="720" placeholder="Minutes" required style="width:110px"><button class="btn btn-ghost btn-sm">Log study time</button></form>
+        <p class="hint">Streaks never expire punitively - they only show consistency.</p></div>
+
+      <div class="card"><div class="row between"><h3 style="margin:0">Your roadmap</h3><a class="small" href="{{ url_for('learner.roadmap') }}">Open</a></div>
+        {% if stages %}{% set done = stages|selectattr('done')|list|length %}<p class="small muted">{{ done }} of {{ stages|length }} stages complete</p>{{ bar((100 * done / stages|length) | round | int) }}
+          <ul class="small" style="padding-left:18px">{% for s in upcoming %}<li>{{ s.title }} <span class="muted">({{ s.pct }}%)</span></li>{% endfor %}</ul>
+        {% else %}<p class="muted small">No career goal yet.</p><a class="btn btn-primary btn-sm" href="{{ url_for('learner.profile') }}">Choose a goal</a>{% endif %}</div>
+
+      <div class="card"><div class="row between"><h3 style="margin:0">Skill progress</h3><a class="small" href="{{ url_for('learner.skill_gap') }}">Skill gap</a></div>
+        {% for s in skills %}<div style="margin:10px 0"><div class="row between small"><span>{{ s.name }}</span><span class="muted">{{ s.level }}%</span></div>{{ bar(s.level, true) }}</div>
+        {% else %}<p class="muted small">Rate your skills to see progress here.</p><a class="btn btn-ghost btn-sm" href="{{ url_for('learner.skill_gap') }}">Rate my skills</a>{% endfor %}
+        <p class="hint">Estimates from your ratings, completed resources and quizzes - not an exam result.</p></div>
+
+      <div class="card"><h3>Continue learning</h3>
+        {% for c in cont %}<p style="margin:6px 0"><a href="{{ url_for('main.resource_detail', rid=c.id) }}">{{ c.title }}</a><br><span class="small muted">{{ c.provider }}</span></p>{% else %}<p class="muted small">Nothing in progress. Start the recommended resource above.</p>{% endfor %}</div>
+
+      <div class="card"><h3>Upcoming</h3>
+        <ul class="small" style="padding-left:18px;margin:0">
+          {% for s in upcoming %}<li>Roadmap: {{ s.title }}{% if s.milestone %} - {{ s.milestone }}{% endif %}</li>{% endfor %}
+          {% for e in exams %}<li>Exam: {{ e.name }} on {{ e.exam_date }}</li>{% endfor %}
+          {% for pr in prog_projects %}<li>Project in progress: <a href="{{ url_for('learner.project_detail', pid=pr.id) }}">{{ pr.title }}</a></li>{% endfor %}
+        </ul>{% if not upcoming and not exams and not prog_projects %}<p class="muted small">Nothing scheduled.</p>{% endif %}</div>
+    </div>
+  </div>
+</div></section>
+{% endblock %}

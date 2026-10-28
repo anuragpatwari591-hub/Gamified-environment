@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar, empty with context %}
+{% block title %}Your progress - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <h1 style="font-size:2rem">Your progress {% if demo %}<span class="pill demo">Demo Data</span>{% endif %}</h1>
+  <div class="grid g4">
+    <div class="card"><div class="stat">{{ snap.completed }}</div><div class="muted small">resources completed</div></div>
+    <div class="card"><div class="stat">{{ snap.projects_done }}</div><div class="muted small">projects completed</div></div>
+    <div class="card"><div class="stat">{{ (snap.total_minutes / 60) | round(1) }}h</div><div class="muted small">total study time logged</div></div>
+    <div class="card"><div class="stat">{{ snap.streak }}</div><div class="muted small">day streak</div></div>
+  </div>
+  <div class="grid g2" style="margin-top:20px">
+    <div class="card"><h3>Study time, last 14 days</h3>
+      <div class="bars" role="img" aria-label="Minutes studied per day for the last 14 days">{% for d, m in days %}<div style="height:{{ (100 * m / maxm) | round | int }}%" title="{{ d.strftime('%d %b') }}: {{ m }} min"></div>{% endfor %}</div>
+      <div class="bar-labels">{% for d, m in days %}<span>{{ d.day }}</span>{% endfor %}</div>
+      <p class="small muted" style="margin-top:8px">Consistency matters more than marathon days.</p></div>
+    <div class="card"><h3>Skill growth</h3>
+      {% for s in skills %}<div style="margin:10px 0"><div class="row between small"><span>{{ s.name }}</span><span class="muted">{{ level_label(s.level) }} &middot; {{ s.level }}%</span></div>{{ bar(s.level, true) }}</div>{% else %}<p class="muted">Rate your skills to start tracking growth.</p>{% endfor %}</div>
+  </div>
+  <div class="grid g3" style="margin-top:20px">
+    <div class="card"><h3>Roadmap</h3>{% set d = stages|selectattr('done')|list|length %}{% if stages %}<p class="small muted">{{ d }} of {{ stages|length }} stages</p>{{ bar((100 * d / stages|length)|round|int) }}{% else %}<p class="muted small">No roadmap yet.</p>{% endif %}</div>
+    <div class="card"><h3>Recently completed</h3>{% for r in done %}<p class="small" style="margin:6px 0"><a href="{{ url_for('main.resource_detail', rid=r.id) }}">{{ r.title }}</a></p>{% else %}<p class="muted small">Nothing yet.</p>{% endfor %}</div>
+    <div class="card"><h3>Quiz results</h3>{% for q in quiz %}<p class="small" style="margin:6px 0">{{ q.name }}: {{ q.score }}/{{ q.total }}</p>{% else %}<p class="muted small">No quizzes taken.</p>{% endfor %}</div>
+  </div>
+  <div class="card" style="margin-top:20px"><h3>Projects</h3>{% for p in projects %}<p class="small" style="margin:6px 0"><a href="{{ url_for('learner.project_detail', pid=p.id) }}">{{ p.title }}</a> - {{ p.status }}</p>{% else %}<p class="muted small">None started. <a href="{{ url_for('learner.projects') }}">Pick a project</a>.</p>{% endfor %}</div>
+</div></section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "admin/layout.html" %}
+{% macro list_card(title, rows, empty_msg='No data yet') %}<div class="card"><h3>{{ title }}</h3>{% for r in rows %}<div class="row between small" style="padding:4px 0"><span>{{ r.name }}</span><strong>{{ r.n }}</strong></div>{% else %}<p class="muted small">{{ empty_msg }}</p>{% endfor %}</div>{% endmacro %}
+{% block admin %}
+<h1 style="font-size:1.8rem">Analytics</h1>
+<p class="muted small">All figures are real counts from this database. Zero means nothing has happened yet - nothing is estimated.</p>
+<div class="grid g4">
+  {% for label, v in [('Students', s.users),('Active last 7 days', s.active_users),('Onboarded', s.onboarded),('Using a roadmap', s.roadmap_users),('Returning (3+ study days)', s.returning),('Resources', s.resources),('Unverified resources', s.unverified),('Open reports', s.open_reports)] %}
+  <div class="card"><div class="stat">{{ v }}</div><div class="muted small">{{ label }}</div></div>{% endfor %}
+</div>
+<div class="grid g4" style="margin-top:20px">
+  {% for label, v in [('Outbound clicks', s.clicks),('Free clicks', s.free_clicks),('Paid / freemium clicks', s.paid_clicks),('Affiliate clicks', s.aff_clicks),('Conversions recorded', s.conversions),('Commission recorded (INR)', s.commission),('Helpful feedback', s.feedback_yes),('Not-helpful feedback', s.feedback_no)] %}
+  <div class="card"><div class="stat">{{ v }}</div><div class="muted small">{{ label }}</div></div>{% endfor %}
+</div>
+<p class="small muted">Conversions and commission appear only after an admin records them from a partner's report. Potential revenue is not shown as revenue.</p>
+<div class="grid g3" style="margin-top:20px">
+  {{ list_card('Popular streams', d.streams) }}{{ list_card('Popular career goals', d.careers) }}{{ list_card('Skills in use', d.skills) }}
+  {{ list_card('Most searched', d.searches) }}{{ list_card('Most clicked resources', d.top_resources) }}{{ list_card('Searches with no results', d.no_results, 'None - good.') }}
+</div>
+<div class="card" style="margin-top:20px"><h3>Broken or outdated resources</h3>{% for b in d.broken %}<p class="small" style="margin:4px 0"><a href="{{ url_for('admin.e_edit', name='resources', eid=b.id) }}">{{ b.title }}</a></p>{% else %}<p class="muted small">None flagged.</p>{% endfor %}</div>
+{% endblock %}

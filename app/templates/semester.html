@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar, empty, csrf with context %}
+{% block title %}Semester mode - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap">
+  <h1 style="font-size:2rem">Semester mode</h1><p class="muted">Keep your degree on track beside your career skills. Add subjects, exam dates and topics.</p>
+  <div class="grid g3">
+    <div class="card"><div class="stat">{{ academic_h }} h</div><div class="small muted">per week planned for University Academics</div></div>
+    <div class="card"><div class="stat">{{ career_h }} h</div><div class="small muted">per week left for Career Skills (from your {{ (p.minutes_per_day * 7 / 60)|round(1) }} h weekly goal)</div></div>
+    <div class="card"><a class="btn btn-primary" href="{{ url_for('learner.exam') }}">Open exam preparation</a></div>
+  </div>
+  <div class="two-col" style="margin-top:22px;align-items:start">
+    <div class="stack">
+      {% for s in subs %}<div class="card"><div class="row between"><h3 style="margin:0">{{ s.s.name }} {% if s.s.is_weak %}<span class="pill demo">Weak subject</span>{% endif %}</h3>
+        <form method="post" action="{{ url_for('learner.semester_delete', sid=s.s.id) }}">{{ csrf() }}<button class="btn btn-danger btn-sm" aria-label="Delete {{ s.s.name }}">Delete</button></form></div>
+        <p class="small muted">{% if s.days is not none %}{% if s.days >= 0 %}Exam in {{ s.days }} days ({{ s.s.exam_date }}){% else %}Exam date passed{% endif %}{% else %}No exam date{% endif %} &middot; {{ s.s.hours_per_week }} h/week{% if s.s.target_marks %} &middot; target {{ s.s.target_marks }}%{% endif %}</p>
+        {% if s.topics %}{{ bar((100 * s.done / s.topics|length)|round|int, true) }}<ul style="list-style:none;padding:0;margin:10px 0 0">{% for t in s.topics %}<li class="row between small" style="padding:4px 0">
+          <form method="post" action="{{ url_for('learner.topic_toggle', tid=t.id) }}">{{ csrf() }}<button class="btn btn-ghost btn-sm" style="border:0;background:none;text-align:left" aria-pressed="{{ 'true' if t.done else 'false' }}">{{ '&#9745;'|safe if t.done else '&#9744;'|safe }} {{ t.topic }}</button></form>
+          <form method="post" action="{{ url_for('learner.topic_toggle', tid=t.id) }}">{{ csrf() }}<input type="hidden" name="field" value="weak"><button class="btn btn-ghost btn-sm" style="border:0">{{ 'Weak topic' if t.is_weak else 'Mark weak' }}</button></form></li>{% endfor %}</ul>{% endif %}</div>
+      {% else %}{{ empty('No subjects yet', 'Add your first subject using the form.') }}{% endfor %}
+    </div>
+    <form method="post" class="card stack">{{ csrf() }}<h3>Add a subject</h3>
+      <div><label for="name">Subject</label><input id="name" name="name" type="text" required maxlength="80"></div>
+      <div><label for="exam_date">Exam date</label><input id="exam_date" name="exam_date" type="date"></div>
+      <div class="grid g2"><div><label for="target_marks">Target marks (%)</label><input id="target_marks" name="target_marks" type="number" min="0" max="100"></div><div><label for="hours_per_week">Hours / week</label><input id="hours_per_week" name="hours_per_week" type="number" min="0" max="80" value="4"></div></div>
+      <div><label for="topics">Syllabus topics (one per line)</label><textarea id="topics" name="topics" placeholder="Unit 1: ...&#10;Unit 2: ..."></textarea></div>
+      <label style="font-weight:500"><input type="checkbox" name="is_weak" value="1" style="width:auto;min-height:0"> This is a weak subject for me</label>
+      <button class="btn btn-primary">Add subject</button></form>
+  </div>
+</div></section>
+{% endblock %}

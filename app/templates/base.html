@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}NAVORA - Stop searching. Start knowing what to learn next.{% endblock %}</title>
+  <meta name="description" content="{% block desc %}NAVORA is a personal learning navigator for students: tell it your stream, goal and learning style, and get a clear roadmap, free-first resources and your next move.{% endblock %}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="theme-color" content="#4f46e5">
+  <meta property="og:title" content="{{ self.title() }}"><meta property="og:description" content="{{ self.desc() }}"><meta property="og:type" content="website"><meta property="og:site_name" content="NAVORA">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% if user %}has-tabbar{% endif %}">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <div class="nav" id="nav">
+      <a class="brand" href="{{ url_for('main.home') }}" aria-label="NAVORA home">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f46e5"/><stop offset=".6" stop-color="#7c3aed"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#lg)"/><path d="M19 47V17l26 30V17" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="17" r="4" fill="#fff"/></svg>
+        NAVORA
+      </a>
+      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="nav">&#9776;</button>
+      <nav class="nav-links" aria-label="Main">
+        {% set ep = request.endpoint or '' %}
+        {% if user and user.role != 'admin' %}
+          <a href="{{ url_for('learner.dashboard') }}" {% if ep == 'learner.dashboard' %}aria-current="page"{% endif %}>{{ t('nav.dashboard') }}</a>
+          <a href="{{ url_for('learner.next_move') }}" {% if ep == 'learner.next_move' %}aria-current="page"{% endif %}>{{ t('nav.next') }}</a>
+          <a href="{{ url_for('learner.roadmap') }}" {% if ep == 'learner.roadmap' %}aria-current="page"{% endif %}>{{ t('nav.roadmap') }}</a>
+          <a href="{{ url_for('main.resources') }}" {% if ep == 'main.resources' %}aria-current="page"{% endif %}>{{ t('nav.resources') }}</a>
+          <a href="{{ url_for('learner.mentor_page') }}">{{ t('nav.mentor') }}</a>
+          <details><summary>{{ t('nav.more') }} &#9662;</summary><div class="menu">
+            <a href="{{ url_for('learner.skill_gap') }}">{{ t('nav.skillgap') }}</a>
+            <a href="{{ url_for('learner.projects') }}">{{ t('nav.projects') }}</a>
+            <a href="{{ url_for('learner.progress') }}">{{ t('nav.progress') }}</a>
+            <a href="{{ url_for('learner.bookmarks') }}">{{ t('nav.saved') }}</a>
+            <a href="{{ url_for('learner.semester') }}">{{ t('nav.semester') }}</a>
+            <a href="{{ url_for('learner.exam') }}">{{ t('nav.exam') }}</a>
+            <a href="{{ url_for('learner.readiness') }}">{{ t('nav.readiness') }}</a>
+            <a href="{{ url_for('main.careers') }}">{{ t('nav.careers') }}</a>
+            <a href="{{ url_for('learner.profile') }}">{{ t('nav.profile') }}</a>
+          </div></details>
+        {% else %}
+          <a href="{{ url_for('main.resources') }}">{{ t('nav.resources') }}</a>
+          <a href="{{ url_for('main.careers') }}">{{ t('nav.careers') }}</a>
+          <a href="{{ url_for('main.skills') }}">Skills</a>
+          <a href="{{ url_for('main.streams') }}">{{ t('nav.streams') }}</a>
+          <a href="{{ url_for('main.discover') }}">{{ t('nav.discover') }}</a>
+          {% if user and user.role == 'admin' %}<a href="{{ url_for('admin.dashboard') }}">{{ t('nav.admin') }}</a>{% endif %}
+        {% endif %}
+      </nav>
+      <div class="nav-right">
+        <form class="lang" method="post" action="{{ url_for('auth.set_lang', code='en') }}" id="lang-form">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ request.path }}">
+          {% for code, name in LANGS.items() %}{% if code != lang %}<button class="btn btn-ghost btn-sm" formaction="{{ url_for('auth.set_lang', code=code) }}" lang="{{ code }}">{{ name }}</button>{% endif %}{% endfor %}
+        </form>
+        {% if user %}
+          <a class="bell" href="{{ url_for('learner.notifications') }}" aria-label="Notifications ({{ unread }} unread)">&#128276;{% if unread %}<span class="badge">{{ unread }}</span>{% endif %}</a>
+          <form method="post" action="{{ url_for('auth.logout') }}"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><button class="btn btn-ghost btn-sm">{{ t('nav.logout') }}</button></form>
+        {% else %}
+          <a class="btn btn-ghost btn-sm" href="{{ url_for('auth.login') }}">{{ t('nav.login') }}</a>
+          <a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}">{{ t('nav.signup') }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
+{% with msgs = get_flashed_messages(with_categories=true) %}{% if msgs %}
+<div class="flashes" role="status">{% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}</div>
+{% endif %}{% endwith %}
+<main id="main">{% block content %}{% endblock %}</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="grid g4">
+      <div><strong style="color:#fff;font-size:1.1rem">NAVORA</strong><p class="small">Stop searching. Start knowing what to learn next.</p>
+        <p class="small">Recommendations are informational. Evaluate every course independently before you commit time or money.</p></div>
+      <div><h4>Explore</h4><ul><li><a href="{{ url_for('main.resources') }}">Resources</a></li><li><a href="{{ url_for('main.careers') }}">Careers</a></li><li><a href="{{ url_for('main.skills') }}">Skills</a></li><li><a href="{{ url_for('main.discover') }}">I don't know what to learn</a></li></ul></div>
+      <div><h4>Trust</h4><ul><li><a href="{{ url_for('main.disclosure') }}">Affiliate &amp; sponsored disclosure</a></li><li><a href="{{ url_for('main.privacy') }}">Privacy policy</a></li><li><a href="{{ url_for('main.terms') }}">Terms of use</a></li></ul></div>
+      <div><h4>About this build</h4><p class="small">NAVORA is an early-stage product built as a B.Tech IT project. Items marked <span class="pill demo">Demo Data</span> are illustrative.</p></div>
+    </div>
+    <p class="small" style="margin-top:28px">&copy; {{ year }} NAVORA. Third-party resources belong to their respective owners.</p>
+  </div>
+</footer>
+{% if user and user.role != 'admin' %}
+<nav class="tabbar" aria-label="Quick navigation">
+  <a href="{{ url_for('learner.dashboard') }}" {% if ep == 'learner.dashboard' %}aria-current="page"{% endif %}><span>&#127968;</span>Home</a>
+  <a href="{{ url_for('learner.next_move') }}" {% if ep == 'learner.next_move' %}aria-current="page"{% endif %}><span>&#10148;</span>Next</a>
+  <a href="{{ url_for('main.resources') }}" {% if ep == 'main.resources' %}aria-current="page"{% endif %}><span>&#128269;</span>Search</a>
+  <a href="{{ url_for('learner.mentor_page') }}" {% if ep == 'learner.mentor_page' %}aria-current="page"{% endif %}><span>&#128172;</span>Mentor</a>
+</nav>
+{% endif %}
+<script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>

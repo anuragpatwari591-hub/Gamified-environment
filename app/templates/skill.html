@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "_macros.html" import resource_card, empty with context %}
+{% block title %}Learn {{ s.name }} - free-first resources - NAVORA{% endblock %}
+{% block desc %}{{ s.description }}{% endblock %}
+{% block content %}
+<section class="section"><div class="wrap">
+  <p class="crumbs"><a href="{{ url_for('main.skills') }}">Skills</a> / {{ s.name }}</p>
+  <h1>{{ s.name }}</h1><p class="lead">{{ s.description }}</p>
+  {% if user and user.role != 'admin' %}<a class="btn btn-ghost" href="{{ url_for('learner.quiz', sid=s.id) }}">Take the quiz</a>{% endif %}
+  {% if careers %}<p class="small muted" style="margin-top:14px">Needed for: {% for c in careers %}<a href="{{ url_for('main.career_detail', slug=c.slug) }}">{{ c.title }}</a>{{ ', ' if not loop.last }}{% endfor %}</p>{% endif %}
+  <h2 style="margin-top:24px">Resources</h2>
+  <div class="grid g3">{% for r in res %}{{ resource_card(r, none, false) }}{% else %}{{ empty('No resources yet', 'We have not added resources for this skill yet.') }}{% endfor %}</div>
+  {% if projects %}<h2 style="margin-top:28px">Projects</h2><div class="grid g3">{% for p in projects %}<a class="card hover" href="{{ url_for('learner.project_detail', pid=p.id) }}" style="color:inherit;text-decoration:none"><h3>{{ p.title }}</h3><p class="small muted">{{ p.description }}</p></a>{% endfor %}</div>{% endif %}
+</div></section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<h1 style="font-size:1.8rem">{{ 'Edit' if eid else 'New' }} - {{ ent.title }}</h1>
+<form method="post" class="card" novalidate>
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  {% for f in ent.fields %}
+  <div class="field"><label for="f_{{ f.name }}">{{ f.label }}{% if f.required %} *{% endif %}</label>
+    {% set v = row[f.name] if row and f.name in row else '' %}
+    {% if f.kind == 'textarea' %}<textarea id="f_{{ f.name }}" name="{{ f.name }}">{{ v }}</textarea>
+    {% elif f.kind == 'select' %}<select id="f_{{ f.name }}" name="{{ f.name }}">{% for o in f.opts %}<option value="{{ o }}" {{ 'selected' if v|string == o|string }}>{{ o }}</option>{% endfor %}</select>
+    {% elif f.kind.startswith('ref') %}<select id="f_{{ f.name }}" name="{{ f.name }}"><option value="">-</option>{% for oid, label in refs[f.name] %}<option value="{{ oid }}" {{ 'selected' if v|string == oid|string }}>{{ label }}</option>{% endfor %}</select>
+    {% elif f.kind == 'bool' %}<input id="f_{{ f.name }}" type="checkbox" name="{{ f.name }}" value="1" style="width:auto;min-height:0" {{ 'checked' if v and v != '0' }}>
+    {% else %}<input id="f_{{ f.name }}" name="{{ f.name }}" type="{{ 'number' if f.kind in ('int','float') else ('url' if f.kind == 'url' else 'text') }}" {% if f.kind == 'float' %}step="any"{% endif %} value="{{ v }}" maxlength="{{ f.maxlen }}">{% endif %}
+  </div>{% endfor %}
+  {% if ent.m2m %}<fieldset class="field" style="border:1px solid var(--line);border-radius:12px"><legend>Skills covered</legend><div class="chips">{% for s in all_skills %}<label class="chip-opt"><input type="checkbox" name="skill_ids" value="{{ s.id }}" {{ 'checked' if s.id in chosen }}><span>{{ s.name }}</span></label>{% endfor %}</div></fieldset>{% endif %}
+  <div class="row"><button class="btn btn-primary">Save</button><a class="btn btn-ghost" href="{{ url_for('admin.e_list', name=name) }}">Cancel</a></div>
+</form>
+{% endblock %}

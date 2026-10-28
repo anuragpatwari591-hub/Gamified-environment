@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar, csrf with context %}
+{% block title %}Career readiness - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:760px">
+  <h1 style="font-size:2rem">Career readiness</h1>
+  <div class="card"><div class="stat grad-text">{{ pct }}%</div><p class="muted small">Checklist completion - a transparent to-do metric, not a judgement of you. Items marked auto update from your skills and projects.</p>{{ bar(pct) }}</div>
+  <div class="card" style="margin-top:16px">{% for i in items %}
+    <div class="row between" style="padding:12px 0;{{ 'border-top:1px solid var(--line)' if not loop.first }}">
+      <div><span class="{{ 'pill free' if i.done else 'pill' }}">{{ 'Done' if i.done else 'To do' }}</span> {{ i.label }} {% if i.auto %}<span class="small muted">(auto)</span>{% endif %}</div>
+      {% if not i.auto %}<form method="post">{{ csrf() }}<input type="hidden" name="item" value="{{ i.key }}"><button class="btn btn-ghost btn-sm">{{ 'Undo' if i.done else 'Mark done' }}</button></form>
+      {% else %}<a class="btn btn-ghost btn-sm" href="{{ url_for('learner.skill_gap') if i.key == 'skills' else url_for('learner.projects') }}">Open</a>{% endif %}</div>{% endfor %}</div>
+</div></section>
+{% endblock %}

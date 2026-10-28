@@ -1,0 +1,12 @@
+{% extends "admin/layout.html" %}
+{% from "_macros.html" import csrf with context %}
+{% block admin %}
+<div class="row between"><h1 style="font-size:1.8rem;margin:0">{{ ent.title }}</h1><a class="btn btn-primary btn-sm" href="{{ url_for('admin.e_edit', name=name) }}">+ Add new</a></div>
+<form method="get" class="row" style="margin:14px 0" role="search"><label for="q" style="position:absolute;left:-999px">Search</label><input id="q" name="q" value="{{ text }}" placeholder="Search by {{ ent.list[0] }}" style="max-width:320px"><button class="btn btn-ghost btn-sm">Search</button></form>
+<div class="card table-wrap" style="padding:0"><table><thead><tr>{% for c in ent.list %}<th>{{ c.replace('_', ' ') }}</th>{% endfor %}<th></th></tr></thead><tbody>
+  {% for r in rows %}<tr>{% for c in ent.list %}<td>{{ r[c] if r[c] is not none else '-' }}</td>{% endfor %}
+    <td style="white-space:nowrap"><a class="btn btn-ghost btn-sm" href="{{ url_for('admin.e_edit', name=name, eid=r.id) }}">Edit</a>
+    {% if name == 'resources' %}<form method="post" action="{{ url_for('admin.verify', rid=r.id) }}" style="display:inline">{{ csrf() }}<input type="hidden" name="status" value="active"><input type="hidden" name="notes" value="Link opened and content checked by admin."><button class="btn btn-ghost btn-sm" title="Mark as manually verified today">Verify</button></form>{% endif %}
+    <form method="post" action="{{ url_for('admin.e_delete', name=name, eid=r.id) }}" style="display:inline" data-confirm="Delete this item? This cannot be undone.">{{ csrf() }}<button class="btn btn-danger btn-sm">Delete</button></form></td></tr>
+  {% else %}<tr><td colspan="{{ ent.list|length + 1 }}" class="muted">Nothing here yet.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}

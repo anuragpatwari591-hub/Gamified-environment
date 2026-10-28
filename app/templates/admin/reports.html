@@ -1,0 +1,10 @@
+{% extends "admin/layout.html" %}
+{% from "_macros.html" import csrf with context %}
+{% block admin %}
+<h1 style="font-size:1.8rem">Resource reports</h1>
+<div class="card table-wrap" style="padding:0"><table><thead><tr><th>Resource</th><th>Issue</th><th>Note</th><th>By</th><th>Status</th><th></th></tr></thead><tbody>
+{% for r in rows %}<tr><td><a href="{{ url_for('admin.e_edit', name='resources', eid=r.resource_id) }}">{{ r.title }}</a><div class="small muted">{{ r.rstatus }}</div></td><td>{{ r.kind.replace('_', ' ') }}</td><td>{{ r.note }}</td><td>{{ r.email or 'anonymous' }}</td><td><span class="pill {{ 'bad' if r.status == 'open' else 'free' }}">{{ r.status }}</span></td>
+  <td style="white-space:nowrap">{% if r.status == 'open' %}<form method="post" style="display:inline">{{ csrf() }}<input type="hidden" name="id" value="{{ r.id }}"><button class="btn btn-ghost btn-sm" name="action" value="resolved">Resolve</button> <button class="btn btn-ghost btn-sm" name="action" value="dismissed">Dismiss</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="6" class="muted">No reports yet.</td></tr>{% endfor %}</tbody></table></div>
+<p class="small muted">To mark a link broken, edit the resource and set its status (or use Verify on the resource list after checking it).</p>
+{% endblock %}

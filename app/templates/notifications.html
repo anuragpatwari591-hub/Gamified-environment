@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% from "_macros.html" import empty, csrf with context %}
+{% block title %}Notifications - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:720px">
+  <div class="row between"><h1 style="font-size:2rem;margin:0">Notifications</h1>{% if rows %}<form method="post">{{ csrf() }}<button class="btn btn-ghost btn-sm">Mark all read</button></form>{% endif %}</div>
+  <p class="muted small">Only useful messages: milestones, completions and project updates. No marketing.</p>
+  {% for n in rows %}<div class="card" style="margin-top:10px;padding:14px"><span class="pill {{ '' if n.is_read else 'free' }}">{{ n.kind }}</span> {{ n.message }}<div class="small muted">{{ n.created_at }}</div></div>{% else %}{{ empty('You are all caught up', 'We will notify you about roadmap milestones and project updates.') }}{% endfor %}
+</div></section>
+{% endblock %}

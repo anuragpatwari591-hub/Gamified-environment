@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_macros.html" import feedback, why as why_box, price, dur with context %}
+{% block title %}Your Next Move - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:820px">
+  <h1 style="font-size:2rem">What should I learn next?</h1>
+  {% include "_nextmove.html" %}
+  {% if nm.resource %}<div class="card" style="margin-top:18px"><h3>How we chose it</h3>{{ why_box(nm.resource.why) }}
+    <p class="small muted" style="margin-top:10px">Match score {{ nm.resource.score }}/100 &middot; {{ nm.resource.resource.provider }} &middot; {{ dur(nm.resource.resource.duration_min) }}</p>
+    {{ feedback(nm.resource.resource.id, reasons) }}</div>
+  {% if nm.alternatives %}<h2 style="margin-top:26px;font-size:1.2rem">Other good options for this stage</h2>
+  {% for a in nm.alternatives %}<div class="card" style="margin-top:12px"><div class="row between"><div>{{ price(a.resource) }} <a href="{{ url_for('main.resource_detail', rid=a.resource.id) }}"><strong>{{ a.resource.title }}</strong></a><div class="small muted">{{ a.resource.provider }}</div></div><div class="score" style="--p:{{ a.score }}"><b>{{ a.score }}</b></div></div>{{ why_box(a.why) }}</div>{% endfor %}{% endif %}{% endif %}
+</div></section>
+{% endblock %}

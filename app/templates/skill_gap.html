@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_macros.html" import bar, empty, csrf with context %}
+{% block title %}Skill gap - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:900px">
+  <h1 style="font-size:2rem">Skill gap: {{ p.career_title or 'choose a goal' }}</h1>
+  {% if not gap %}{{ empty('No target role yet', 'Pick a career goal to compare your skills against it.', url_for('learner.profile'), 'Choose a goal') }}
+  {% else %}
+  <p class="muted">Rate yourself honestly - this drives your roadmap and recommendations. Quizzes and completed resources adjust it over time.</p>
+  <form method="post" class="card">{{ csrf() }}
+    {% for g in gap %}<div style="margin:16px 0"><div class="row between"><label for="s{{ g.skill_id }}" style="margin:0">{{ g.name }}</label><span class="small muted">now <output id="o{{ g.skill_id }}">{{ g.current }}</output>% &middot; needed {{ g.required }}%</span></div>
+      <input id="s{{ g.skill_id }}" name="skill_{{ g.skill_id }}" type="range" min="0" max="100" step="5" value="{{ g.current }}" style="width:100%;min-height:0" aria-describedby="h{{ g.skill_id }}">
+      {{ bar(g.current, true) }}<div class="hint" id="h{{ g.skill_id }}">{{ level_label(g.current) }}{% if g.gap %} &middot; gap of {{ g.gap }} points{% else %} &middot; meets target{% endif %}</div></div>{% endfor %}
+    <button class="btn btn-primary">Save my skill levels</button>
+  </form>
+  <h2 style="margin-top:30px">Recommended learning order</h2>
+  {% for o in order %}<div class="card" style="margin-top:12px"><div class="row between"><div><strong>{{ loop.index }}. {{ o.gap.name }}</strong><div class="small muted">Close a gap of {{ o.gap.gap }} points</div></div>
+    {% if o.res %}<a class="btn btn-ghost btn-sm" href="{{ url_for('main.resource_detail', rid=o.res.resource.id) }}">{{ o.res.resource.title }}</a>{% endif %}</div></div>
+  {% else %}<div class="notice ok">You meet the target level for every listed skill. Focus on projects and your portfolio.</div>{% endfor %}
+  {% endif %}
+</div></section>
+<script src="{{ url_for('static', filename='js/range.js') }}" defer></script>
+{% endblock %}

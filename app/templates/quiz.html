@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% from "_macros.html" import empty, csrf with context %}
+{% block title %}{{ skill.name }} quiz - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:760px">
+  <h1 style="font-size:2rem">{{ skill.name }} quiz</h1>
+  {% if not qs %}{{ empty('No questions yet', 'Quiz questions for this skill have not been added.', url_for('main.skills'), 'Browse skills') }}
+  {% elif result %}
+    <div class="card next-move"><span class="kicker">Result</span><h2>{{ result.score }} / {{ result.total }}</h2><p>Your skill estimate was updated. A short quiz is only a rough signal - keep practising.</p></div>
+    {% for d in result.detail %}<div class="card" style="margin-top:12px"><p><strong>{{ loop.index }}. {{ d.q.question }}</strong></p><p class="small {{ 'ok' if d.ok else '' }}">{{ ('&#10003; Correct' if d.ok else '&#10007; Not quite')|safe }}{% if not d.ok %} - answer: {{ d.q['option_' ~ d.q.answer] }}{% endif %}</p><p class="small muted" style="margin:0">{{ d.q.explanation }}</p></div>{% endfor %}
+    <div class="row" style="margin-top:16px"><a class="btn btn-primary" href="{{ url_for('learner.quiz', sid=skill.id) }}">Try again</a><a class="btn btn-ghost" href="{{ url_for('learner.next_move') }}">Back to Next Move</a></div>
+  {% else %}
+  <form method="post" class="stack">{{ csrf() }}
+    {% for item in qs %}<fieldset class="card" style="border:1px solid var(--line)"><legend style="font-weight:700;padding:0 8px">{{ loop.index }}. {{ item.question }}</legend>
+      <div class="stack">{% for k in ['a','b','c','d'] %}<label class="chip-opt" style="display:block"><input type="radio" name="q{{ item.id }}" value="{{ k }}" required><span style="display:block;border-radius:12px">{{ item['option_' ~ k] }}</span></label>{% endfor %}</div></fieldset>{% endfor %}
+    <button class="btn btn-primary btn-lg">Submit answers</button></form>{% endif %}
+</div></section>
+{% endblock %}

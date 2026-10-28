@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}AI Study Mentor - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:820px">
+  <h1 style="font-size:2rem">AI Study Mentor</h1>
+  <p class="muted">Uses your profile and roadmap. {% if ai_enabled %}An external AI service is connected for Explain and Career modes; everything else is rule-based.{% else %}It runs fully offline with rule-based answers, so it always works. An external LLM can be connected later (see docs/future-ai.md).{% endif %}</p>
+  <div class="chips" role="group" aria-label="Mentor mode" style="margin-bottom:12px">
+    {% set ph = {'explain':'Explain recursion','quiz':'Quiz me on SQL','plan':'I have 2 hours today','resources':'Find resources for networking','projects':'Give me a project','revision':'Make a revision plan','career':'What skills am I missing?'} %}
+    {% for k, v in modes.items() %}<button type="button" class="btn {{ 'btn-primary' if k == 'explain' else 'btn-ghost' }} btn-sm" data-mode="{{ k }}" data-ph="{{ ph[k] }}" aria-pressed="{{ 'true' if k == 'explain' else 'false' }}">{{ v }}</button>{% endfor %}
+  </div>
+  <div class="card chat">
+    <div class="chat-log" id="chat-log" aria-live="polite"><div class="msg bot">Hi {{ user.name.split()[0] }}! Pick a mode and ask me anything. For example: "Explain recursion", "I have 2 hours today. What should I study?" or "Quiz me on SQL".</div></div>
+    <form id="chat-form" class="row" style="flex-wrap:nowrap;margin-top:10px"><label for="chat-input" style="position:absolute;left:-999px">Message</label>
+      <input id="chat-input" type="text" maxlength="500" placeholder="Explain recursion" autocomplete="off" required><button class="btn btn-primary">Send</button></form>
+  </div>
+  <div class="row" style="margin-top:12px">{% for s in ['Why should I learn Git?','What should I learn after SQL?','Explain SQL injection','Make a revision plan'] %}<button type="button" class="btn btn-ghost btn-sm" data-prompt="{{ s }}">{{ s }}</button>{% endfor %}</div>
+  <p class="small muted" style="margin-top:14px">The mentor can be wrong. For exams and regulated qualifications, rely on official study material.</p>
+</div></section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Supported streams - NAVORA{% endblock %}
+{% block desc %}NAVORA supports B.Tech, BCA, MCA, BBA, MBA, B.Com, CA, CS, CMA, law, design and more.{% endblock %}
+{% block content %}
+<section class="section"><div class="wrap">
+  <h1>Streams we support</h1><p class="lead">Pick your programme during onboarding and NAVORA tunes careers, skills and resources to it.</p>
+  {% set ns = namespace(g='') %}
+  {% for s in streams %}
+    {% if s.group_name != ns.g %}{% set ns.g = s.group_name %}<h2 style="margin-top:28px;font-size:1.2rem">{{ s.group_name }}</h2><div class="chips">{% endif %}
+    <a class="pill" style="font-size:.95rem;padding:9px 16px" href="{{ url_for('main.stream_detail', slug=s.slug) }}">{{ s.name }}</a>
+    {% if loop.last or streams[loop.index0 + 1].group_name != s.group_name %}</div>{% endif %}
+  {% endfor %}
+</div></section>
+{% endblock %}

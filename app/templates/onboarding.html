@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Build your Learning DNA - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:720px">
+  <span class="kicker" id="step-label">Learning DNA</span>
+  <div class="steps" aria-hidden="true">{% for i in range(7) %}<i></i>{% endfor %}</div>
+  <form method="post" id="onboard-form" class="card" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    {% include "_dna_form.html" %}
+    <div class="row between" style="margin-top:12px">
+      <button type="button" class="btn btn-ghost" id="step-back" style="visibility:hidden">Back</button>
+      <button type="button" class="btn btn-primary" id="step-next">Next</button>
+      <button class="btn btn-primary" id="step-submit" style="display:none">Save my Learning DNA</button>
+    </div>
+    <noscript><button class="btn btn-primary" style="margin-top:12px">Save my Learning DNA</button></noscript>
+  </form>
+</div></section>
+{% endblock %}

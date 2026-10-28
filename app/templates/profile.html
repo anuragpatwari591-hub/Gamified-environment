@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Your Learning DNA - NAVORA{% endblock %}
+{% block content %}
+<section class="section tight"><div class="wrap" style="max-width:760px">
+  <h1 style="font-size:2rem">Your Learning DNA</h1><p class="muted">Everything NAVORA knows about how you learn. Change anything and your recommendations update immediately.</p>
+  <form method="post" class="card" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <style>.step{display:block !important;margin-bottom:28px}</style>
+    {% include "_dna_form.html" %}
+    <button class="btn btn-primary">Save changes</button>
+  </form>
+  <p class="small muted" style="margin-top:14px">Account: {{ user.name }} ({{ user.email }}). To delete your account, contact the site operator.</p>
+</div></section>
+{% endblock %}

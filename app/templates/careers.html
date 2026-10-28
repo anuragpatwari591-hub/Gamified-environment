@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Career explorer - NAVORA{% endblock %}
+{% block desc %}Explore careers with required skills, roadmaps, projects and free resources.{% endblock %}
+{% block content %}
+<section class="section"><div class="wrap">
+  <h1>Career explorer</h1><p class="lead">What the role involves, which skills it needs, and how to get there. We do not publish salary figures we cannot source and date.</p>
+  <div class="grid g3">{% for c in careers %}
+    <a class="card hover" href="{{ url_for('main.career_detail', slug=c.slug) }}" style="color:inherit;text-decoration:none"><h3>{{ c.title }}</h3><p class="small muted" style="margin:0">{{ c.description }}</p></a>{% endfor %}</div>
+</div></section>
+{% endblock %}

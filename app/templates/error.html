@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ code }} - NAVORA{% endblock %}
+{% block content %}
+<section class="section"><div class="wrap center" style="max-width:560px">
+  <div class="stat grad-text" style="font-size:4.5rem">{{ code }}</div>
+  <h1 style="font-size:1.8rem">{{ title }}</h1>
+  <p class="muted">{{ msg }}</p>
+  <div class="row" style="justify-content:center"><a class="btn btn-primary" href="{{ url_for('main.home') }}">Go to home</a>{% if user %}<a class="btn btn-ghost" href="{{ url_for('learner.dashboard') }}">Open dashboard</a>{% endif %}</div>
+</div></section>
+{% endblock %}

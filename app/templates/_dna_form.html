@@ -1,0 +1,43 @@
+{# Learning DNA form: used by onboarding (stepper) and profile (single page). Needs p, mine, streams, careers, ... #}
+{% set P = p or {} %}
+{% macro sel(a, b) %}{{ 'selected' if a is not none and a|string == b|string }}{% endmacro %}
+<div class="step">
+  <h2>Your education</h2><p class="muted">So we can match careers and resources to your programme.</p>
+  <div class="field"><label for="stream_id">Stream / degree</label>
+    <select id="stream_id" name="stream_id" required><option value="">Choose your programme</option>
+      {% for s in streams %}<option value="{{ s.id }}" {{ sel(P.stream_id, s.id) }}>{{ s.name }}</option>{% endfor %}</select></div>
+  <div class="grid g2"><div class="field"><label for="specialization">Specialisation</label><input id="specialization" name="specialization" type="text" maxlength="80" value="{{ P.specialization or '' }}" placeholder="e.g. Information Technology"></div>
+  <div class="field"><label for="college">College / university</label><input id="college" name="college" type="text" maxlength="120" value="{{ P.college or '' }}"></div></div>
+  <div class="grid g2"><div class="field"><label for="year">Year</label><select id="year" name="year"><option value="">-</option>{% for i in range(1,7) %}<option value="{{ i }}" {{ sel(P.year, i) }}>Year {{ i }}</option>{% endfor %}</select></div>
+  <div class="field"><label for="semester">Semester</label><select id="semester" name="semester"><option value="">-</option>{% for i in range(1,13) %}<option value="{{ i }}" {{ sel(P.semester, i) }}>Semester {{ i }}</option>{% endfor %}</select></div></div>
+</div>
+<div class="step">
+  <h2>What interests you?</h2><p class="muted">Pick any that appeal. Interests nudge recommendations; they do not lock you in.</p>
+  <div class="chips" role="group" aria-label="Interests">{% for i in interests %}<label class="chip-opt"><input type="checkbox" name="interests" value="{{ i }}" {{ 'checked' if i in mine.interests }}><span>{{ i }}</span></label>{% endfor %}</div>
+</div>
+<div class="step">
+  <h2>Your career goal</h2><p class="muted">Not sure yet? Leave it empty - or <a href="{{ url_for('main.discover') }}" target="_blank">try the guided discovery</a>. You can change this anytime.</p>
+  <div class="field"><label for="career_id">Target career</label>
+    <select id="career_id" name="career_id"><option value="">Not decided yet</option>{% for c in careers %}<option value="{{ c.id }}" {{ sel(P.career_id, c.id) }}>{{ c.title }}</option>{% endfor %}</select></div>
+  <div class="field"><label for="level">Your overall level for this goal</label>
+    <select id="level" name="level">{% for v in ['beginner','intermediate','advanced'] %}<option value="{{ v }}" {{ sel(P.level, v) }}>{{ v|capitalize }}</option>{% endfor %}</select>
+    <div class="hint">You can rate individual skills right after this step.</div></div>
+</div>
+<div class="step">
+  <h2>How do you like to learn?</h2><p class="muted">Pick all that apply.</p>
+  <div class="chips" role="group" aria-label="Learning formats">{% for k, v in formats.items() %}<label class="chip-opt"><input type="checkbox" name="formats" value="{{ k }}" {{ 'checked' if k in mine.formats }}><span>{{ v }}</span></label>{% endfor %}</div>
+</div>
+<div class="step">
+  <h2>How much time do you have?</h2>
+  <div class="chips" role="radiogroup" aria-label="Study time per day">
+    {% for m, l in [(30,'30 min / day'),(60,'1 hour / day'),(120,'2 hours / day'),(180,'3+ hours / day')] %}<label class="chip-opt"><input type="radio" name="minutes_per_day" value="{{ m }}" {{ 'checked' if (P.minutes_per_day or 60) == m }} required><span>{{ l }}</span></label>{% endfor %}</div>
+</div>
+<div class="step">
+  <h2>Preferred language</h2><p class="muted">Bengali resources are limited right now - the catalogue will say so honestly.</p>
+  <div class="chips" role="radiogroup" aria-label="Language">{% for l in languages %}<label class="chip-opt"><input type="radio" name="language" value="{{ l }}" {{ 'checked' if (P.language or 'English') == l }}><span>{{ l }}</span></label>{% endfor %}</div>
+</div>
+<div class="step">
+  <h2>Budget</h2>
+  <div class="chips" role="radiogroup" aria-label="Budget">{% for k, v in budgets.items() %}<label class="chip-opt"><input type="radio" name="budget" value="{{ k }}" {{ 'checked' if (P.budget or 'mostly_free') == k }}><span>{{ v }}</span></label>{% endfor %}</div>
+  <div class="field" style="margin-top:18px"><label style="font-weight:500"><input type="checkbox" name="free_first" value="1" style="width:auto;min-height:0" {{ 'checked' if P.free_first is not defined or P.free_first is none or P.free_first }}> Free-first mode: prioritise free official resources and show paid courses only with free alternatives</label></div>
+</div>

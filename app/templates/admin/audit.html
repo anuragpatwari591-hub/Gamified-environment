@@ -1,0 +1,6 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<h1 style="font-size:1.8rem">Audit log</h1>
+<div class="card table-wrap" style="padding:0"><table><thead><tr><th>When</th><th>Admin</th><th>Action</th><th>Target</th></tr></thead><tbody>
+{% for r in rows %}<tr><td>{{ r.created_at }}</td><td>{{ r.email }}</td><td>{{ r.action }}</td><td>{{ r.target }}</td></tr>{% else %}<tr><td colspan="4" class="muted">No admin actions yet.</td></tr>{% endfor %}</tbody></table></div>
+{% endblock %}
