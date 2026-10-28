@@ -1,0 +1,20 @@
+{
+  "_comment": "Weights are relative; the engine normalises them. Edit and restart to re-tune (no code change).",
+  "career_relevance": 22,
+  "skill_relevance": 18,
+  "prerequisite_fit": 10,
+  "learning_style": 10,
+  "difficulty_fit": 12,
+  "language": 6,
+  "time_fit": 6,
+  "quality": 10,
+  "freshness": 3,
+  "budget_fit": 4,
+  "interest_match": 6,
+  "free_first_bonus": 12,
+  "feedback_penalty": 0.35,
+  "source_credibility": {
+    "official": 1.0, "university": 0.95, "government": 0.95, "nonprofit": 0.85, "platform": 0.7, "community": 0.6
+  },
+  "quality_weights": {"rating": 40, "credibility": 35, "freshness": 15, "community": 10}
+}
