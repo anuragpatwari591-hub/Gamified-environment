@@ -40,7 +40,6 @@ NAVORA is a working, tested Flask application in `E:\Gamified learning environme
 * Skill-level progress is a heuristic estimate.
 * Rate limiter is in-memory/per-process; no email verification/password reset; no admin 2FA.
 * Language switcher translates only a subset of strings.
-* No screenshots committed in `docs/` (README mentions none); capture them before the presentation.
 * Legal pages are drafts and need professional review before commercial use.
 
 ## Next tasks

@@ -28,6 +28,26 @@ It is built as a B.Tech IT project with a deliberately explainable stack: **Pyth
 
 **Honesty rules:** no seeded ratings, reviews, user counts, salaries or testimonials. Anything illustrative is labelled **Demo Data**; unavailable data says *Not available* / *Rating unavailable*. See [docs/business-model.md](docs/business-model.md).
 
+## Screenshots
+
+Captured from the running app with the seeded demo student (all activity shown is **Demo Data**).
+
+| Landing | Dashboard |
+|---|---|
+| ![Landing page](docs/screenshots/01-landing.png) | ![Dashboard](docs/screenshots/02-dashboard.png) |
+
+| Your Next Move | Resource directory |
+|---|---|
+| ![Next move](docs/screenshots/03-next-move.png) | ![Resources](docs/screenshots/04-resources.png) |
+
+| Resource detail (Why this? + trust) | Roadmap |
+|---|---|
+| ![Resource detail](docs/screenshots/05-resource-detail.png) | ![Roadmap](docs/screenshots/06-roadmap.png) |
+
+| Skill gap | Mobile dashboard | Admin analytics |
+|---|---|---|
+| ![Skill gap](docs/screenshots/07-skill-gap.png) | ![Mobile](docs/screenshots/08-dashboard-mobile.png) | ![Admin](docs/screenshots/09-admin-analytics.png) |
+
 ## Quick start (Windows PowerShell; on macOS/Linux use `python3` and `source .venv/bin/activate`)
 
 ```powershell
